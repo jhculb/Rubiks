@@ -13,15 +13,119 @@ Cube::Cube(int dimension){
   mCube = new int[mCubeArraySize];
 
   for(int i=0; i< mCubeArraySize; i++){
-    mCube[i]= i+1; // could change this, such a minor efficiency though?
+    mCube[i]= i+1; // could change this to zero based
+    // such a minor efficiency though?
+  }
+
+  mRotated = new int [mDimension];
+  mFace = new int[mDimension*mDimension]{};
+}
+
+void Cube::Front(int Choice){
+  //Makes a copy of the front
+  for(int i=0;i<mDimension;i++){
+    for(int j=0;j<mDimension;j++){
+      mFace[i*mDimension+j]=mCube[i*mDimension+j];
+      std::cout << mFace[i*mDimension+j] << '\n';
+    }
+  }
+
+  // Passes it to rotate
+  mFace = Rotate(Choice, mFace);
+  // Imposes over cube
+  for(int i=0;i<mDimension;i++){
+    for(int j=0;j<mDimension;j++){
+      mCube[i*mDimension+j]=mFace[i*mDimension+j];
+    }
   }
 }
 
+void Cube::Top(int Choice){
+  //Makes a copy of the front
+  for(int i=0;i<mDimension;i++){
+    for(int j=0;j<mDimension;j++){
+      mFace[i*mDimension+j]=mCube[i*mDimension+j];
+    }
+  }
+  // Passes it to rotate
+  mFace = Rotate(Choice, mFace);
+  // Imposes over cube
+  for(int i=0;i<mDimension;i++){
+    for(int j=0;j<mDimension;j++){
+      mCube[i*mDimension+j]=mFace[i*mDimension+j];
+    }
+  }
+}
 
-// int* Cube::RotateCW(int* Face){
-//   int length = pow(mDimension,2);
-//   return &length;
-// }
+void Cube::Back(int Choice){
+  //Makes a copy of the front
+  for(int i=0;i<mDimension;i++){
+    for(int j=0;j<mDimension;j++){
+      mFace[i*mDimension+j]=mCube[mCubeArraySize-(i*mDimension+j)-1];
+    }
+  }
+  // Passes it to rotate
+  mFace = Rotate(-Choice, mFace);
+  // Imposes over cube
+  for(int i=0;i<mDimension;i++){
+    for(int j=0;j<mDimension;j++){
+      mCube[mCubeArraySize-(i*mDimension+j)-1]=mFace[i*mDimension+j];
+    }
+  }
+}
+
+int* Cube::Rotate(int Direction, int* Face){
+  if(Direction==1){
+    mFace = RotateCW(mFace);
+  }else if(Direction==-1){
+    mFace = RotateACW(mFace);
+  }else
+  {
+    std::cerr << "Not -1 / 1, error handle" << '\n';
+  }
+  return mFace;
+}
+
+int* Cube::RotateCW(int* Face){
+  int switchvar;
+  if(mDimension%2==1){
+    // for odd
+    for(int i=3;i<=mDimension;i+=2){
+      for(int j=0;j<i-1;j++){
+        switchvar              = Face[i*i-j-(i-1)*3-1]; // Store 3
+        Face[i*i-j-(i-1)*3-1]  = Face[i*i-j-(i-1)*2-1]; // 5 overwriting 3
+        Face[i*i-j-(i-1)*2-1]  = Face[i*i-j-(i-1)-1] ;  // 7 overwriting 5
+        Face[i*i-j-(i-1)-1]    = Face[i*i-j-1];         // 9 overwriting 7
+        Face[i*i-j-1]          = switchvar;             // 3 overwriting 9
+      }
+    }
+  }else{
+    // for even
+    std::cout << "Haven't implemented even yet" << '\n';
+  }
+  return Face;
+}
+
+int* Cube::RotateACW(int* Face){
+  int switchvar;
+  // for odd
+  if(mDimension%2==1){
+    for(int i=3;i<=mDimension;i+=2){
+      for(int j=0;j<i-1;j++){
+        switchvar              = Face[i*i-j-(i-1)*3-1]; // Store 3
+        Face[i*i-j-(i-1)*3-1]  = Face[i*i-j-1];         // 9 overwriting 3
+        Face[i*i-j-1]          = Face[i*i-j-(i-1)-1];   // 7 overwriting 9
+        Face[i*i-j-(i-1)-1]    = Face[i*i-j-(i-1)*2-1]; // 5 overwriting 7
+        Face[i*i-j-(i-1)*2-1]  = switchvar;             // 3 overwriting 5
+      }
+    }
+  }else{
+    // for even
+    std::cout << "Haven't implemented even yet" << '\n';
+  }
+  return Face;
+}
+
 Cube::countDigits(double number){
   int digits =0;
   while(number-0.99999999999 > 10e-12){ // bit of a hack
@@ -149,8 +253,11 @@ void Cube::DisplayInTerminal(){
     }
     std::cout << "\n";
   }
+  std::cout << '\n' << '\n';
 }
 
 Cube::~Cube(){
   delete[] mCube;
+  delete[] mFace;
+  delete[] mRotated;
 }
