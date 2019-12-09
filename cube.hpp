@@ -31,5 +31,7 @@ class Cube
 
     Cube();
 
+    int countDigits(double number);
+
 };
 #endif
