@@ -3,7 +3,7 @@
 
 int main()
 {
-  int FirstCubeDim = 11;
+  int FirstCubeDim = 5;
   Cube myCube(FirstCubeDim);
   myCube.DisplayInTerminal();
 
