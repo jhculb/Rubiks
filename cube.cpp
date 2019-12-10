@@ -41,12 +41,14 @@ void Cube::Front(int Choice){
 }
 
 void Cube::Top(int Choice){
-  //Makes a copy of the front
-  for(int i=0;i<mDimension;i++){
-    for(int j=0;j<mDimension;j++){
-      mFace[i*mDimension+j]=mCube[i*mDimension+j];
+  // Calculates the Top
+  for(int i=mDimension*mDimension-1; i>=0; i--){
+    if(i%n!=0){
+
     }
+
   }
+
   // Passes it to rotate
   mFace = Rotate(Choice, mFace);
   // Imposes over cube
