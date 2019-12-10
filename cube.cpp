@@ -11,12 +11,13 @@ Cube::Cube(int dimension){
   mDimension = dimension; // set private mDimension
   mCubeArraySize=pow(mDimension, 3)-pow(mDimension-2, 3);
   mCube = new int[mCubeArraySize];
-
   for(int i=0; i< mCubeArraySize; i++){
     mCube[i]= i+1; // could change this to zero based
     // such a minor efficiency though?
+
   }
 
+  mMaxDigits = countDigits(mCube[mCubeArraySize-1]);
   mRotated = new int [mDimension];
   mFace = new int[mDimension*mDimension]{};
   mTempFace = new int[mDimension*mDimension]{};
@@ -116,7 +117,13 @@ void Cube::Top(int Choice){
 
 int* Despiral(int* Face){
   //despiral if even: check bottom left or top right
-
+  if(mDimension%2=1)
+  {
+    
+  }
+  else{
+    std::cout << "Even dim Despiral: Not implemented yet" << "\n";
+}
 }
 
 int* Cube::Rotate(int Direction, int* Face){
@@ -191,7 +198,7 @@ void Cube::DisplayInTerminal(){
     }
   }
   for(int i= mDimension*mDimension-1; i>-1 ; i--){
-    mFace[row*mDimension-col] = mCube[i];
+    mFace[row*mDimension+col] = mCube[i];
     if(col+colinc >= mDimension || row+rowinc >= mDimension ||
        row+rowinc < 0 || mFace[(row+rowinc)*mDimension+col+colinc]!=0){
       switchvar = colinc;
@@ -201,15 +208,16 @@ void Cube::DisplayInTerminal(){
     row += rowinc;
     col += colinc;
   }
+
+
   // Display =====================
   // Front -----------------------
-  int numberOfDigits = countDigits(mCube[mDimension*mDimension-1]);
   std::cout << "Front:" << '\n';
   std::string spaces;
   for(int i=0; i < mDimension; i++){
     for(int j=0; j < mDimension; j++){
       spaces = ", ";
-      for(int ia=0; ia < numberOfDigits-countDigits(mFace[i*mDimension+j]); ia++){
+      for(int ia=0; ia < mMaxDigits-countDigits(mFace[i*mDimension+j]); ia++){
         spaces.append(" ");
       }
       std::cout << mFace[i*mDimension+j] << spaces;
@@ -219,19 +227,17 @@ void Cube::DisplayInTerminal(){
   std::cout << '\n';
 
   // Middle ---------------------
-  int maxInSlice, maxIndex;
+  int maxIndex;
   std::string stringRow;
   for(int slice =1; slice <= mDimension-2; slice++){
     std::cout << "Slice " << slice << ":" << '\n'; // Preamble
     maxIndex = mDimension*mDimension+4*(mDimension-1)*slice-1;
-    maxInSlice = mCube[maxIndex];
-    numberOfDigits = countDigits(maxInSlice);
 
     for(int i=0; i < mDimension; i++){
       stringRow =std::to_string(
                     mCube[mDimension*mDimension+4*(mDimension-1)*(slice-1)+i]);
       stringRow.append(", ");
-      for(int ia=0;ia<numberOfDigits-countDigits(
+      for(int ia=0;ia<mMaxDigits-countDigits(
         mCube[mDimension*mDimension+4*(mDimension-1)*(slice-1)+i]);ia++){
         stringRow.append(" ");
       }
@@ -239,12 +245,15 @@ void Cube::DisplayInTerminal(){
         for(int j=0; j < mDimension-1; j++){
           stringRow.append(std::to_string(mCube[maxIndex-j]));
           stringRow.append(", ");
+          for(int ia=0;ia<mMaxDigits-countDigits(mCube[maxIndex-j]);ia++){
+            stringRow.append(" ");
+          }
         }
       }else if(i==mDimension-1){// Last row
         int baseIndex = mDimension*mDimension+4*(mDimension-1)*(slice-1)+i;
         for(int j=1;j<=mDimension-1;j++){
           stringRow.append(std::to_string(mCube[baseIndex+j]));
-          for(int ia=0;ia<numberOfDigits-countDigits(mCube[baseIndex+j]);ia++){
+          for(int ia=0;ia<mMaxDigits-countDigits(mCube[baseIndex+j]);ia++){
             stringRow.append(" ");
           }
           stringRow.append(", ");
@@ -252,7 +261,7 @@ void Cube::DisplayInTerminal(){
       }else{// Middle rows
         for(int j=0; j < mDimension-2; j++){
           stringRow.append("  "); // Comma spaces
-          for(int ia=0; ia < numberOfDigits; ia++){
+          for(int ia=0; ia < mMaxDigits; ia++){
             stringRow.append(" "); // Digit spaces
           }
         }
@@ -284,13 +293,12 @@ void Cube::DisplayInTerminal(){
     col += colinc;
   }
   // Back -----------------------
-  numberOfDigits = countDigits(mCube[mCubeArraySize-1]);
   std::cout << "Back:" << '\n';
   // Front -----------------------
   for(int i=0; i < mDimension; i++){
     for(int j=0; j < mDimension; j++){
       spaces = ", ";
-      for(int ia=0; ia < numberOfDigits-countDigits(mFace[i*mDimension+j]); ia++){
+      for(int ia=0; ia < mMaxDigits-countDigits(mFace[i*mDimension+j]); ia++){
         spaces.append(" ");
       }
       std::cout << mFace[i*mDimension+j] << spaces;

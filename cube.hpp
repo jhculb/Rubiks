@@ -30,6 +30,7 @@ class Cube
     int* mRotated;
     int* mFace;
     int* mTempFace;
+    int mMaxDigits;
 
     Cube();
 
