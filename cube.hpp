@@ -23,12 +23,13 @@ class Cube
     int* mCube;
     int mDimension;
     int mCubeArraySize;
+    int* Despiral(int* Face);
     int* Rotate(int Direction, int* Face);
     int* RotateCW(int* Face);
     int* RotateACW(int* Face);
     int* mRotated;
     int* mFace;
-    // std::array<std::array<int>> mCube;
+    int* mTempFace;
 
     Cube();
 

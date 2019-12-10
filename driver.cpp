@@ -4,10 +4,10 @@
 int main()
 {
   //Max value 720
-  int FirstCubeDim = 5;
+  int FirstCubeDim = 6;
   Cube myCube(FirstCubeDim);
   myCube.DisplayInTerminal();
-  myCube.Front(1);
+  // myCube.Top(1);
   // myCube.DisplayInTerminal();
   // myCube.Back(-1);
   // myCube.DisplayInTerminal();

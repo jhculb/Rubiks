@@ -19,6 +19,7 @@ Cube::Cube(int dimension){
 
   mRotated = new int [mDimension];
   mFace = new int[mDimension*mDimension]{};
+  mTempFace = new int[mDimension*mDimension]{};
 }
 
 void Cube::Front(int Choice){
@@ -28,25 +29,6 @@ void Cube::Front(int Choice){
       mFace[i*mDimension+j]=mCube[i*mDimension+j];
       std::cout << mFace[i*mDimension+j] << '\n';
     }
-  }
-
-  // Passes it to rotate
-  mFace = Rotate(Choice, mFace);
-  // Imposes over cube
-  for(int i=0;i<mDimension;i++){
-    for(int j=0;j<mDimension;j++){
-      mCube[i*mDimension+j]=mFace[i*mDimension+j];
-    }
-  }
-}
-
-void Cube::Top(int Choice){
-  // Calculates the Top
-  for(int i=mDimension*mDimension-1; i>=0; i--){
-    if(i%n!=0){
-
-    }
-
   }
 
   // Passes it to rotate
@@ -74,6 +56,67 @@ void Cube::Back(int Choice){
       mCube[mCubeArraySize-(i*mDimension+j)-1]=mFace[i*mDimension+j];
     }
   }
+}
+
+void Cube::Top(int Choice){
+  // Calculates the Top
+  for(int i=mDimension*mDimension-1; i>=0; i--){
+    if(i%mDimension!=0){
+      if(i/mDimension==mDimension-1){
+        mFace[i]=mCube[mDimension*mDimension-1-i%mDimension];
+        //bottom row, off by one
+      }
+      else{
+        // mFace[i]=mCube[mDimension*(mDimension-1)+(mDimension-1-i/mDimension)*4*(mDimension-1)-(i%mDimension-mDimension)];
+        mFace[i]=mCube[mDimension*mDimension+(mDimension-1-i/mDimension)*4*(mDimension-1)-i%mDimension];
+      }
+      //right (n-1) sequence
+    }else if(i==mDimension*(mDimension-1)){
+      mFace[i]=mCube[mDimension*mDimension-1];
+    }else{
+      //left hand column - seems to be correct
+      mFace[i]=mCube[mDimension*mDimension+(mDimension-2-i/mDimension)*4*(mDimension-1)];
+    }
+  }
+
+  for(int i=0;i<mDimension;i++){
+    for(int j=0;j<mDimension;j++){
+      std::cout << mFace[i*mDimension+j] << ", ";
+    }
+    std::cout << '\n';
+  }
+  std::cout << '\n';
+  // Passes it to rotate
+  mFace = Rotate(Choice, mFace);
+  // Imposes over cube
+
+  for(int i=0;i<mDimension;i++){
+    for(int j=0;j<mDimension;j++){
+      std::cout << mFace[i*mDimension+j] << ", ";
+    }
+    std::cout << '\n';
+  }
+  std::cout << '\n';
+
+  for(int i=mDimension*mDimension-1; i>=0; i--){
+    if(i%mDimension!=0){
+      if(i/mDimension==mDimension-1){
+        mCube[mDimension*mDimension-1-i%mDimension] = mFace[i];
+      }
+      else{
+        mCube[mDimension*mDimension+(mDimension-1-i/mDimension)*4*(mDimension-1)-i%mDimension] = mFace[i];
+      }
+    }else if(i==mDimension*(mDimension-1)){
+        mCube[mDimension*mDimension-1]=mFace[i];
+    }else{
+        mCube[mDimension*mDimension+(mDimension-2-i/mDimension)*4*(mDimension-1)] = mFace[i];
+    }
+  }
+}
+
+int* Despiral(int* Face){
+  //despiral if even: check bottom left or top right
+
 }
 
 int* Cube::Rotate(int Direction, int* Face){
@@ -140,18 +183,17 @@ Cube::countDigits(double number){
 void Cube::DisplayInTerminal(){
   // if odd!!!!
   // Front Calculation ==================
-  int face[mDimension][mDimension];
   int col =0, row =0, colinc =1, rowinc =0, switchvar;
   //initialise front
   for(int i=0; i< mDimension; i++){
     for(int j=0; j< mDimension; j++){
-      face[i][j] =0;
+      mFace[i*mDimension+j] =0;
     }
   }
   for(int i= mDimension*mDimension-1; i>-1 ; i--){
-    face[row][col] = mCube[i];
+    mFace[row*mDimension-col] = mCube[i];
     if(col+colinc >= mDimension || row+rowinc >= mDimension ||
-       row+rowinc < 0 || face[row+rowinc][col+colinc]!=0)    {
+       row+rowinc < 0 || mFace[(row+rowinc)*mDimension+col+colinc]!=0){
       switchvar = colinc;
       colinc    = -rowinc;
       rowinc    = switchvar;
@@ -167,10 +209,10 @@ void Cube::DisplayInTerminal(){
   for(int i=0; i < mDimension; i++){
     for(int j=0; j < mDimension; j++){
       spaces = ", ";
-      for(int ia=0; ia < numberOfDigits-countDigits(face[i][j]); ia++){
+      for(int ia=0; ia < numberOfDigits-countDigits(mFace[i*mDimension+j]); ia++){
         spaces.append(" ");
       }
-      std::cout << face[i][j] << spaces;
+      std::cout << mFace[i*mDimension+j] << spaces;
     }
     std::cout << "\n";
   }
@@ -225,15 +267,15 @@ void Cube::DisplayInTerminal(){
   //initialise face
   for(int i=0; i< mDimension; i++){
     for(int j=0; j< mDimension; j++){
-      face[i][j] =0;
+      mFace[i*mDimension+j] =0;
     }
   }
 
   col =0, row =0, colinc =0, rowinc =1;
   for(int i= mCubeArraySize-mDimension*mDimension; i<mCubeArraySize ; i++){
-    face[row][col] = mCube[i];
+    mFace[row*mDimension+col] = mCube[i];
     if(col+colinc >= mDimension || row+rowinc >= mDimension ||
-       row+rowinc < 0 || face[row+rowinc][col+colinc]!=0)    {
+       row+rowinc < 0 || mFace[(row+rowinc)*mDimension+col+colinc]!=0){
       switchvar = rowinc;
       rowinc    = -colinc;
       colinc    = switchvar;
@@ -248,10 +290,10 @@ void Cube::DisplayInTerminal(){
   for(int i=0; i < mDimension; i++){
     for(int j=0; j < mDimension; j++){
       spaces = ", ";
-      for(int ia=0; ia < numberOfDigits-countDigits(face[i][j]); ia++){
+      for(int ia=0; ia < numberOfDigits-countDigits(mFace[i*mDimension+j]); ia++){
         spaces.append(" ");
       }
-      std::cout << face[i][j] << spaces;
+      std::cout << mFace[i*mDimension+j] << spaces;
     }
     std::cout << "\n";
   }
