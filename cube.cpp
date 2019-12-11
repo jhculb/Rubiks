@@ -67,7 +67,7 @@ void Cube::Back(int Choice){
   }
 }
 
-void Cube::Top(int Choice){
+void Cube::Top(int Choice){// TO DO EVEN
   // Calculates the Top
   for(int i=mDimension*mDimension-1; i>=0; i--){
     if(i%mDimension!=0){
@@ -119,6 +119,18 @@ void Cube::Top(int Choice){
     ChoiceOutputString="Null - bad input";
   }
   std::cout << "Rotated Top " << ChoiceOutputString << '\n';
+}
+
+void Bottom(int Choice){// TO DO
+
+}
+
+void Left(int Choice){// TO DO
+
+}
+
+void Right(int Choice){// TO DO
+
 }
 
 void Cube::Spiral(int* Face){//Does this work for even cubes?
@@ -230,41 +242,30 @@ int* Cube::Rotate(int Direction, int* Face){
 
 int* Cube::RotateCW(int* Face){
   int switchvar;
-  if(mDimension%2==1){
-    // for odd
-    for(int i=3;i<=mDimension;i+=2){
-      for(int j=0;j<i-1;j++){
-        switchvar              = Face[i*i-j-(i-1)*3-1]; // Store 3
-        Face[i*i-j-(i-1)*3-1]  = Face[i*i-j-(i-1)*2-1]; // 5 overwriting 3
-        Face[i*i-j-(i-1)*2-1]  = Face[i*i-j-(i-1)-1] ;  // 7 overwriting 5
-        Face[i*i-j-(i-1)-1]    = Face[i*i-j-1];         // 9 overwriting 7
-        Face[i*i-j-1]          = switchvar;             // 3 overwriting 9
-      }
+  for(int i=2+mDimension%2;i<=mDimension;i+=2){
+    for(int j=0;j<i-1;j++){
+      switchvar              = Face[i*i-j-(i-1)*3-1]; // Store 3
+      Face[i*i-j-(i-1)*3-1]  = Face[i*i-j-(i-1)*2-1]; // 5 overwriting 3
+      Face[i*i-j-(i-1)*2-1]  = Face[i*i-j-(i-1)-1] ;  // 7 overwriting 5
+      Face[i*i-j-(i-1)-1]    = Face[i*i-j-1];         // 9 overwriting 7
+      Face[i*i-j-1]          = switchvar;             // 3 overwriting 9
     }
-  }else{
-    // for even
-    std::cout << "Haven't implemented even yet" << '\n';
   }
   return Face;
 }
 
 int* Cube::RotateACW(int* Face){
   int switchvar;
-  // for odd
-  if(mDimension%2==1){
-    for(int i=3;i<=mDimension;i+=2){
-      for(int j=0;j<i-1;j++){
-        switchvar              = Face[i*i-j-(i-1)*3-1]; // Store 3
-        Face[i*i-j-(i-1)*3-1]  = Face[i*i-j-1];         // 9 overwriting 3
-        Face[i*i-j-1]          = Face[i*i-j-(i-1)-1];   // 7 overwriting 9
-        Face[i*i-j-(i-1)-1]    = Face[i*i-j-(i-1)*2-1]; // 5 overwriting 7
-        Face[i*i-j-(i-1)*2-1]  = switchvar;             // 3 overwriting 5
-      }
+  for(int i=2+mDimension%2;i<=mDimension;i+=2){
+    for(int j=0;j<i-1;j++){
+      switchvar              = Face[i*i-j-(i-1)*3-1]; // Store 3
+      Face[i*i-j-(i-1)*3-1]  = Face[i*i-j-1];         // 9 overwriting 3
+      Face[i*i-j-1]          = Face[i*i-j-(i-1)-1];   // 7 overwriting 9
+      Face[i*i-j-(i-1)-1]    = Face[i*i-j-(i-1)*2-1]; // 5 overwriting 7
+      Face[i*i-j-(i-1)*2-1]  = switchvar;             // 3 overwriting 5
     }
-  }else{
-    // for even
-    std::cout << "Haven't implemented even yet" << '\n';
   }
+
   return Face;
 }
 
