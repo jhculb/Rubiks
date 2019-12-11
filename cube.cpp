@@ -14,7 +14,6 @@ Cube::Cube(int dimension){
 
   mSquareSize = pow(mDimension,2);
   mCubeArraySize=pow(mDimension, 3)-pow(mDimension-2, 3);
-  mMaxDigits = countDigits(mCube[mCubeArraySize-1]);
 
   mCube = new int[mCubeArraySize];
   for(int i=0; i< mCubeArraySize; i++){
@@ -22,6 +21,7 @@ Cube::Cube(int dimension){
     // such a minor efficiency though?
   }
 
+  mMaxDigits = countDigits(mCube[mCubeArraySize-1]);
   mFace = new int[mDimension*mDimension]{};
   mTempFace = new int[mDimension*mDimension]{};
 }
