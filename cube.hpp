@@ -8,12 +8,14 @@ class Cube
   public:
     //To write default and specialist constructor - default private?
     Cube(int dimension);
-    void Top(int Choice);
+    void Top(int Choice);//
     void Bottom(int Choice);
-    void Front(int Choice);
-    void Back(int Choice);
+    void Front(int Choice);//
+    void Back(int Choice);//
     void Left(int Choice);
     void Right(int Choice);
+
+    bool IsSolved();
 
     void DisplayInTerminal();
 
@@ -21,6 +23,7 @@ class Cube
 
   private:
     int* mCube;
+    int* mCubeSolved;
     int mDimension;
     int mCubeArraySize;
     void Spiral(int* Face);

@@ -14,13 +14,22 @@ Cube::Cube(int dimension){
   for(int i=0; i< mCubeArraySize; i++){
     mCube[i]= i+1; // could change this to zero based
     // such a minor efficiency though?
-
   }
 
   mMaxDigits = countDigits(mCube[mCubeArraySize-1]);
   mRotated = new int [mDimension];
   mFace = new int[mDimension*mDimension]{};
   mTempFace = new int[mDimension*mDimension]{};
+}
+
+bool Cube::IsSolved(){
+  bool IsSolved = true;
+  for(int i=0; i< mCubeArraySize; i++){
+    if (mCube[i]!=i+1){
+        IsSolved=false;
+    }
+  }
+  return IsSolved;
 }
 
 void Cube::Front(int Choice){
@@ -100,7 +109,7 @@ void Cube::Top(int Choice){
     }
   }
 
-  
+
   std::string ChoiceOutputString; // Should parse this at higher level
   if(Choice==1){
     ChoiceOutputString="Clockwise";
