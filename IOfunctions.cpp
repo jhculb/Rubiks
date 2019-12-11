@@ -60,10 +60,12 @@ void initialIO(Cube* myCube){
     }
   }
 
-  std::cout << "Creating " << cubeDim<<" by "<< cubeDim << " Cube" << '\n';
-  if(inputBool){std::cout << "Verbose output" << '\n';}
+  std::cout << "Creating " << cubeDim<<" by "<< cubeDim << " Cube";
+  if(inputBool){std::cout << " with Verbose output" << '\n';}
+  std::cout << '\n';
 
   myCube->SetCube(cubeDim,inputBool,autoInputBool);
+  myCube->DisplayInTerminal();
 }
 
 commands hashit(std::string const& inString){

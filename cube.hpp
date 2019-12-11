@@ -41,9 +41,9 @@ class Cube
     int* mFace;
     int* mTempFace;
 
-    int* Spiral(const int* Face);
-    int* SpiralBack(const int* Face);
-    int* Despiral(const int* Face);
+    void Spiral(int* Face);
+    void SpiralBack(int* Face);
+    void Despiral(int* Face);
 
     void Rotate(const bool Direction);
     void RotateCW();
@@ -51,6 +51,6 @@ class Cube
 
     void ExecuteCubeDefinitions(std::string Action, bool Choice);
 
-
+    void debugmFace();
 };
 #endif

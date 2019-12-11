@@ -18,28 +18,33 @@ Cube::Cube(){
 
 void Cube::SetCube(const int dimension, const bool verbose,const bool autocheck)
 {
-  //must be int, greater than 0
-  //Max value 720
-  //assert()
-  //1D has an error!
+  if(!mSetup){
 
-  mDimension = dimension; // set private mDimension
-  mVerbose = verbose;
-  mAutoCheck = autocheck;
+    //must be int, greater than 0
+    //Max value 720
+    //assert()
+    //1D has an error!
 
-  mSquareSize = pow(mDimension,2);
-  mCubeArraySize=pow(mDimension, 3)-pow(mDimension-2, 3);
+    mDimension = dimension; // set private mDimension
+    mVerbose = verbose;
+    mAutoCheck = autocheck;
 
-  mCube = new int[mCubeArraySize];
-  for(int i=0; i< mCubeArraySize; i++){
-    mCube[i]= i+1;
+    mSquareSize = pow(mDimension,2);
+    mCubeArraySize=pow(mDimension, 3)-pow(mDimension-2, 3);
+
+    mCube = new int[mCubeArraySize];
+    for(int i=0; i< mCubeArraySize; i++){
+      mCube[i]= i+1;
+    }
+
+    mMaxDigits = countDigits(mCube[mCubeArraySize-1]);
+    mFace = new int[mDimension*mDimension]{};
+    mTempFace = new int[mDimension*mDimension]{};
+
+    mSetup = true;
+  }else{
+    std::cerr << "Cube Already Set" << '\n';
   }
-
-  mMaxDigits = countDigits(mCube[mCubeArraySize-1]);
-  mFace = new int[mDimension*mDimension]{};
-  mTempFace = new int[mDimension*mDimension]{};
-
-  mSetup = true;
 }
 
 bool Cube::IsSolved(){
@@ -113,7 +118,7 @@ void Cube::Top(const bool Choice){
 
   Despiral(mFace);
   Rotate(Choice);
-  mFace = Spiral(mFace);
+  Spiral(mFace);
 
   for(int i=mDimension*mDimension-1; i>=0; i--){// Imposes over cube
     if(i%mDimension!=0){
@@ -149,7 +154,7 @@ void Cube::Bottom(const bool Choice){
 
   Despiral(mFace);
   Rotate(Choice);
-  mFace = Spiral(mFace);
+  Spiral(mFace);
 
   for(int i=mDimension*mDimension-1; i>=0; i--){
       if(i/mDimension==mDimension-1){// Bottom row, first slice off by one
@@ -183,7 +188,7 @@ void Cube::Left(const bool Choice){
 
   Despiral(mFace);
   Rotate(Choice);
-  mFace = Spiral(mFace);
+  Spiral(mFace);
 
   for(int i=0; i<mDimension;i++){
     for(int j=0; j<mDimension;j++){
@@ -218,7 +223,7 @@ void Cube::Right(const bool Choice){
 
   Despiral(mFace);
   Rotate(Choice);
-  mFace = Spiral(mFace);
+  Spiral(mFace);
 
   for(int i=0; i<mDimension;i++){
     for(int j=0; j<mDimension;j++){
@@ -236,7 +241,7 @@ void Cube::Right(const bool Choice){
   ExecuteCubeDefinitions("Right",Choice);
 }
 
-int* Cube::Spiral(const int* Face){
+void Cube::Spiral(int* Face){
 
   for(int i=0; i< mDimension; i++){
     for(int j=0; j< mDimension; j++){
@@ -255,10 +260,14 @@ int* Cube::Spiral(const int* Face){
     row += rowinc;
     col += colinc;
   }
-  return(mTempFace);
+  for(int i=0; i< mDimension; i++){
+    for(int j=0; j< mDimension; j++){
+       Face[i*mDimension+j]=mTempFace[i*mDimension+j];
+    }
+  }
 }
 
-int* Cube::SpiralBack(const int* Face){
+void Cube::SpiralBack(int* Face){
 
   for(int i=0; i< mDimension; i++){
     for(int j=0; j< mDimension; j++){
@@ -277,10 +286,14 @@ int* Cube::SpiralBack(const int* Face){
     row += rowinc;
     col += colinc;
   }
-  return(mTempFace);
+  for(int i=0; i< mDimension; i++){
+    for(int j=0; j< mDimension; j++){
+       Face[i*mDimension+j]=mTempFace[i*mDimension+j];
+    }
+  }
 }
 
-int* Cube::Despiral(const int* Face){
+void Cube::Despiral(int* Face){
 
   for(int i=0; i< mDimension; i++){// Initialise mTempFace
     for(int j=0; j< mDimension; j++){
@@ -323,7 +336,11 @@ int* Cube::Despiral(const int* Face){
     row+=rowinc;
     col+=colinc;
   }
-  return(mTempFace);
+  for(int i=0; i< mDimension; i++){
+    for(int j=0; j< mDimension; j++){
+       Face[i*mDimension+j]=mTempFace[i*mDimension+j];
+    }
+  }
 }
 
 void Cube::Rotate(const bool Direction){
@@ -376,7 +393,6 @@ void Cube::DisplayInTerminal(){
     }
   }
   Spiral(mFace);
-
   // Display =====================
   // Front -----------------------
   std::cout << "Front:" << '\n';
@@ -441,12 +457,10 @@ void Cube::DisplayInTerminal(){
   }
   // Back Calculation ==================
   // Initialise Back
-  int CounterFormFace = mDimension*mDimension-1;
-  for(int i= mCubeArraySize-mDimension*mDimension; i<mCubeArraySize ; i++){
-    mFace[CounterFormFace] = mCube[i];
-    CounterFormFace--;
+  int CounterFor_mFace = mDimension*mDimension-1;
+  for(int i= 0; i<mDimension*mDimension ; i++){
+    mFace[mDimension*mDimension-1-i] = mCube[mCubeArraySize-mDimension*mDimension+i];
   }
-
   SpiralBack(mFace);
 
   // Back -----------------------
@@ -470,7 +484,6 @@ void Cube::ExecuteCubeDefinitions(std::string Action, bool Choice){
     sayRotation(Action,Choice);
   }
   if(mAutoCheck){
-    std::cout << mAutoCheck << '\n';
     if(IsSolved()){
       std::cout << "Solved!" << '\n';
     }
@@ -503,4 +516,14 @@ void sayRotation(std::string Side, bool direction){
     ChoiceOutputString=" Null - bad input";
   }
   std::cout << "Rotated " << Side << ChoiceOutputString << '\n';
+}
+
+void Cube::debugmFace(){
+  std::cout << "Debugging Mface:" << '\n';
+  for(int i=0;i<mDimension;i++){
+    for(int j=0;j<mDimension;j++){
+      std::cout << mFace[i*mDimension+j] << ", ";
+    }
+    std::cout << '\n';
+  }
 }
