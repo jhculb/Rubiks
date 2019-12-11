@@ -8,16 +8,20 @@
 Cube::Cube(int dimension){
   //must be int, greater than 0
   //assert()
+  //1D has an error!
+
   mDimension = dimension; // set private mDimension
+
+  mSquareSize = pow(mDimension,2);
   mCubeArraySize=pow(mDimension, 3)-pow(mDimension-2, 3);
+  mMaxDigits = countDigits(mCube[mCubeArraySize-1]);
+
   mCube = new int[mCubeArraySize];
   for(int i=0; i< mCubeArraySize; i++){
     mCube[i]= i+1; // could change this to zero based
     // such a minor efficiency though?
   }
 
-  mMaxDigits = countDigits(mCube[mCubeArraySize-1]);
-  mRotated = new int [mDimension];
   mFace = new int[mDimension*mDimension]{};
   mTempFace = new int[mDimension*mDimension]{};
 }
@@ -73,18 +77,20 @@ void Cube::Top(int Choice){// TO DO EVEN
     if(i%mDimension!=0){
       if(i/mDimension==mDimension-1){
         mFace[i]=mCube[mDimension*mDimension-1-i%mDimension];
-        //bottom row, off by one
+        //top row, first slice off by one
       }
       else{
-        // mFace[i]=mCube[mDimension*(mDimension-1)+(mDimension-1-i/mDimension)*4*(mDimension-1)-(i%mDimension-mDimension)];
-        mFace[i]=mCube[mDimension*mDimension+(mDimension-1-i/mDimension)*4*(mDimension-1)-i%mDimension];
+        mFace[i]=mCube[mDimension*mDimension+
+        (mDimension-1-i/mDimension)*4*(mDimension-1)
+        -i%mDimension];
       }
       //right (n-1) sequence
     }else if(i==mDimension*(mDimension-1)){
       mFace[i]=mCube[mDimension*mDimension-1];
     }else{
       //left hand column - seems to be correct
-      mFace[i]=mCube[mDimension*mDimension+(mDimension-2-i/mDimension)*4*(mDimension-1)];
+      mFace[i]=mCube[mDimension*mDimension+
+      (mDimension-2-i/mDimension)*4*(mDimension-1)];
     }
   }
   // Passes it to rotate
@@ -100,12 +106,14 @@ void Cube::Top(int Choice){// TO DO EVEN
         mCube[mDimension*mDimension-1-i%mDimension] = mFace[i];
       }
       else{
-        mCube[mDimension*mDimension+(mDimension-1-i/mDimension)*4*(mDimension-1)-i%mDimension] = mFace[i];
+        mCube[mDimension*mDimension+
+        (mDimension-1-i/mDimension)*4*(mDimension-1)-i%mDimension] = mFace[i];
       }
     }else if(i==mDimension*(mDimension-1)){
         mCube[mDimension*mDimension-1]=mFace[i];
     }else{
-        mCube[mDimension*mDimension+(mDimension-2-i/mDimension)*4*(mDimension-1)] = mFace[i];
+        mCube[mDimension*mDimension+
+        (mDimension-2-i/mDimension)*4*(mDimension-1)] = mFace[i];
     }
   }
 
@@ -121,19 +129,66 @@ void Cube::Top(int Choice){// TO DO EVEN
   std::cout << "Rotated Top " << ChoiceOutputString << '\n';
 }
 
-void Bottom(int Choice){// TO DO
+void Cube::Bottom(int Choice){
+// Top with different start place?
+  for(int i=mDimension*mDimension-1; i>=0; i--){
+      if(i/mDimension==mDimension-1){
+        mFace[i]=mCube[mDimension*mDimension-1-3*(mDimension-1)+i%mDimension];
+        //bottom row, first slice off by one
+      }
+      else{
+        mFace[i]=mCube[mDimension*mDimension+
+        (mDimension-1-i/mDimension)*4*(mDimension-1)-
+        3*(mDimension-1)+
+        i%mDimension];
+      }
+  }
+
+  Despiral(mFace);
+  mFace = Rotate(Choice, mFace);
+  Spiral(mFace);
+
+  for(int i=mDimension*mDimension-1; i>=0; i--){
+      if(i/mDimension==mDimension-1){
+        mCube[mDimension*mDimension-1-3*(mDimension-1)+i%mDimension]=mFace[i];
+        //bottom row, first slice off by one
+      }
+      else{
+        mCube[mDimension*mDimension+
+        (mDimension-1-i/mDimension)*4*(mDimension-1)-
+        3*(mDimension-1)+
+        i%mDimension]=mFace[i];
+      }
+  }
+}
+
+void Cube::Left(int Choice){// TO DO
+  //Left column back == n^3-n^2?
+  for(int i=0; i<mDimension;i++){
+    for(int j=0; j<mDimension;j++){
+      if(j=mDimension-1){// Rightmost column
+        if(i==0){// Top row
+          mFace[i*mDimension+j]=mCube[mDimension*mDimension - 1];
+        }else{// Not Top row
+          mFace[i*mDimension+j]=mCube[(mDimension-2)*(mDimension-2)+i-1];
+        }
+      }else{// Not Rightmost column
+        mFace[i*mDimension+j]=mCube[i];
+      }
+    }
+  }
+  for(int i=0;i<mDimension;i++){
+    for(int j=0;j<mDimension;j++){
+      std::cout << mFace[i*mDimension+j] << ", ";
+    }
+    std::cout << '\n';
+  }
+}
+void Cube::Right(int Choice){// TO DO
 
 }
 
-void Left(int Choice){// TO DO
-
-}
-
-void Right(int Choice){// TO DO
-
-}
-
-void Cube::Spiral(int* Face){//Does this work for even cubes?
+void Cube::Spiral(int* Face){
 
   for(int i=0; i< mDimension; i++){
     for(int j=0; j< mDimension; j++){
@@ -159,7 +214,7 @@ void Cube::Spiral(int* Face){//Does this work for even cubes?
   }
 }
 
-void Cube::CWspiral(int* Face){//Does this work for even cubes?
+void Cube::CWspiral(int* Face){
 
   for(int i=0; i< mDimension; i++){
     for(int j=0; j< mDimension; j++){
@@ -382,5 +437,4 @@ Cube::~Cube(){
   delete[] mCube;
   delete[] mFace;
   delete[] mTempFace;
-  delete[] mRotated;
 }

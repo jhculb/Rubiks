@@ -23,10 +23,12 @@ class Cube
 
   private:
     int* mCube;
+
     int mDimension;
+    int mSquareSize;
     int mCubeArraySize;
     int mMaxDigits;
-    int* mRotated;
+
     int* mFace;
     int* mTempFace;
 
