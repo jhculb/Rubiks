@@ -2,18 +2,19 @@
 #define CUBEHEADERDEF
 
 #include <array>
+#include <string>
 
 class Cube
 {
   public:
-    //To write default and specialist constructor - default private?
-    Cube(int dimension);
-    void Front(int Choice);//
-    void Back(int Choice);//
-    void Top(int Choice);//
-    void Bottom(int Choice);
-    void Left(int Choice);
-    void Right(int Choice);
+    //To write default constructor - default private?
+    Cube(int dimension, bool verbose);
+    void Front(bool Choice); // 1 == CW, 0 == ACW
+    void Back(bool Choice);//
+    void Top(bool Choice);//
+    void Bottom(bool Choice);
+    void Left(bool Choice);
+    void Right(bool Choice);
 
     bool IsSolved();
 
@@ -28,21 +29,21 @@ class Cube
     int mSquareSize;
     int mCubeArraySize;
     int mMaxDigits;
+    bool mVerbose;
 
     int* mFace;
     int* mTempFace;
 
     void Spiral(int* Face);
-    void CWspiral(int* Face);
+    void SpiralBack(int* Face);
     void Despiral(int* Face);
 
-    int* Rotate(int Direction, int* Face);
+    int* Rotate(bool Direction, int* Face);
     int* RotateCW(int* Face);
     int* RotateACW(int* Face);
 
     // Cube();
 
-    int countDigits(double number);
 
 };
 #endif
