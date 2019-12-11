@@ -8,16 +8,16 @@ class Cube
 {
   public:
     //To write default constructor - default private?
-    Cube(int dimension, bool verbose);
+    Cube(int dimension, bool verbose, bool autocheck);
+
     void Front(bool Choice); // 1 == CW, 0 == ACW
-    void Back(bool Choice);//
-    void Top(bool Choice);//
+    void Back(bool Choice);
+    void Top(bool Choice);
     void Bottom(bool Choice);
     void Left(bool Choice);
     void Right(bool Choice);
 
     bool IsSolved();
-
     void DisplayInTerminal();
 
     ~Cube();
@@ -30,6 +30,7 @@ class Cube
     int mCubeArraySize;
     int mMaxDigits;
     bool mVerbose;
+    bool mAutoCheck;
 
     int* mFace;
     int* mTempFace;
@@ -42,8 +43,8 @@ class Cube
     int* RotateCW(int* Face);
     int* RotateACW(int* Face);
 
+    void ExecuteCubeDefinitions(std::string Action, bool Choice);
+
     // Cube();
-
-
 };
 #endif

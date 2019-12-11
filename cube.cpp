@@ -8,26 +8,36 @@
 int countDigits(double number);
 void sayRotation(std::string Side, bool direction);
 
-Cube::Cube(int dimension, bool verbose){
+  //Max value 720 --- to include in constructor
+
+Cube::Cube(int dimension, bool verbose, bool autocheck){
   //must be int, greater than 0
   //assert()
   //1D has an error!
 
   mDimension = dimension; // set private mDimension
   mVerbose = verbose;
+  mAutoCheck = autocheck;
 
   mSquareSize = pow(mDimension,2);
   mCubeArraySize=pow(mDimension, 3)-pow(mDimension-2, 3);
 
   mCube = new int[mCubeArraySize];
-  for(int i=0; i< mCubeArraySize; i++){
-    mCube[i]= i+1; // could change this to zero based
-    // such a minor efficiency though?
+  for(int i=0; i< mCubeArraySize; i++){//
+    mCube[i]= i+1;
   }
 
+  std::cout << "Constructing mcube front" << '\n';
+  for(int i=0;i<mDimension;i++){
+    for(int j=0;j<mDimension; j++){
+      std::cout << mCube[i*mDimension+j] << ", ";
+    }
+    std::cout << '\n';
+  }
   mMaxDigits = countDigits(mCube[mCubeArraySize-1]);
   mFace = new int[mDimension*mDimension]{};
   mTempFace = new int[mDimension*mDimension]{};
+
 }
 
 bool Cube::IsSolved(){
@@ -41,12 +51,20 @@ bool Cube::IsSolved(){
 }
 
 void Cube::Front(bool Choice){
+  std::cout << "ROTATING front" << '\n';
+  for(int i=0;i<mDimension;i++){
+    for(int j=0;j<mDimension; j++){
+      std::cout << mCube[i*mDimension+j] << ", ";
+    }
+    std::cout << '\n';
+  }
   //Makes a copy of the front
   for(int i=0;i<mDimension;i++){
     for(int j=0;j<mDimension;j++){
       mFace[i*mDimension+j]=mCube[i*mDimension+j];
     }
   }
+
   // Passes it to rotate
   mFace = Rotate(Choice, mFace);
   // Imposes over cube
@@ -55,9 +73,7 @@ void Cube::Front(bool Choice){
       mCube[i*mDimension+j]=mFace[i*mDimension+j];
     }
   }
-  if(mVerbose){
-    sayRotation("Front",Choice);
-  }
+  ExecuteCubeDefinitions("Front",Choice);
 }
 
 void Cube::Back(bool Choice){
@@ -73,9 +89,7 @@ void Cube::Back(bool Choice){
       mCube[mCubeArraySize-(i*mDimension+j)-1]=mFace[i*mDimension+j];
     }
   }
-  if(mVerbose){
-    sayRotation("Back",Choice);
-  }
+  ExecuteCubeDefinitions("Back",Choice);
 }
 
 void Cube::Top(bool Choice){
@@ -121,9 +135,7 @@ void Cube::Top(bool Choice){
         (mDimension-2-i/mDimension)*4*(mDimension-1)] = mFace[i];
     }
   }
-  if(mVerbose){
-    sayRotation("Top",Choice);
-  }
+  ExecuteCubeDefinitions("Top",Choice);
 }
 
 void Cube::Bottom(bool Choice){
@@ -153,9 +165,7 @@ void Cube::Bottom(bool Choice){
         i%mDimension]=mFace[i];
       }
   }
-  if(mVerbose){
-    sayRotation("Bottom",Choice);
-  }
+  ExecuteCubeDefinitions("Bottom",Choice);
 }
 
 void Cube::Left(bool Choice){
@@ -193,9 +203,7 @@ void Cube::Left(bool Choice){
       }
     }
   }
-  if(mVerbose){
-    sayRotation("Left",Choice);
-  }
+  ExecuteCubeDefinitions("Left",Choice);
 }
 
 void Cube::Right(bool Choice){
@@ -229,9 +237,7 @@ void Cube::Right(bool Choice){
       }
     }
   }
-  if(mVerbose){
-    sayRotation("Right",Choice);
-  }
+  ExecuteCubeDefinitions("Right",Choice);
 }
 
 void Cube::Spiral(int* Face){
@@ -335,7 +341,7 @@ void Cube::Despiral(int* Face){
   }
 }
 
-int* Cube::Rotate(bool Direction, int* Face){
+int* Cube::Rotate(bool Direction, int* Face){//Is face neccesary
 
   if(Direction==1){
     mFace = RotateCW(mFace);
@@ -350,6 +356,13 @@ int* Cube::Rotate(bool Direction, int* Face){
 
 int* Cube::RotateCW(int* Face){
 
+  std::cout << "ROTATING" << '\n';
+  for(int i=0;i<mDimension;i++){
+    for(int j=0;j<mDimension; j++){
+      std::cout << Face[i*mDimension+j] << ", ";
+    }
+    std::cout << '\n';
+  }
   int switchvar;
   for(int i=2+mDimension%2;i<=mDimension;i+=2){
     for(int j=0;j<i-1;j++){
@@ -475,6 +488,20 @@ void Cube::DisplayInTerminal(){
     std::cout << "\n";
   }
   std::cout << '\n' << '\n';
+}
+
+void Cube::ExecuteCubeDefinitions(std::string Action, bool Choice){
+
+  DisplayInTerminal();
+  if(mVerbose){
+    sayRotation(Action,Choice);
+  }
+  if(mAutoCheck){
+    std::cout << mAutoCheck << '\n';
+    if(IsSolved()){
+      std::cout << "Solved!" << '\n';
+    }
+  }
 }
 
 int countDigits(double number){
