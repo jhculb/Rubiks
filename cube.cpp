@@ -28,7 +28,6 @@ void Cube::Front(int Choice){
   for(int i=0;i<mDimension;i++){
     for(int j=0;j<mDimension;j++){
       mFace[i*mDimension+j]=mCube[i*mDimension+j];
-      std::cout << mFace[i*mDimension+j] << '\n';
     }
   }
 
@@ -79,26 +78,13 @@ void Cube::Top(int Choice){
       mFace[i]=mCube[mDimension*mDimension+(mDimension-2-i/mDimension)*4*(mDimension-1)];
     }
   }
-
-  for(int i=0;i<mDimension;i++){
-    for(int j=0;j<mDimension;j++){
-      std::cout << mFace[i*mDimension+j] << ", ";
-    }
-    std::cout << '\n';
-  }
-  std::cout << '\n';
   // Passes it to rotate
+
+  Despiral(mFace);
   mFace = Rotate(Choice, mFace);
+  Spiral(mFace);
+
   // Imposes over cube
-
-  for(int i=0;i<mDimension;i++){
-    for(int j=0;j<mDimension;j++){
-      std::cout << mFace[i*mDimension+j] << ", ";
-    }
-    std::cout << '\n';
-  }
-  std::cout << '\n';
-
   for(int i=mDimension*mDimension-1; i>=0; i--){
     if(i%mDimension!=0){
       if(i/mDimension==mDimension-1){
@@ -113,16 +99,111 @@ void Cube::Top(int Choice){
         mCube[mDimension*mDimension+(mDimension-2-i/mDimension)*4*(mDimension-1)] = mFace[i];
     }
   }
+
+  
+  std::string ChoiceOutputString; // Should parse this at higher level
+  if(Choice==1){
+    ChoiceOutputString="Clockwise";
+  }else if(Choice==-1){
+    ChoiceOutputString="Anti-Clockwise";
+  }else{
+    ChoiceOutputString="Null - bad input";
+  }
+  std::cout << "Rotated Top " << ChoiceOutputString << '\n';
 }
 
-int* Despiral(int* Face){
-  //despiral if even: check bottom left or top right
-  if(mDimension%2=1)
-  {
-    
+void Cube::Spiral(int* Face){//Does this work for even cubes?
+
+  for(int i=0; i< mDimension; i++){
+    for(int j=0; j< mDimension; j++){
+      mTempFace[i*mDimension+j] =0;
+    }
   }
+  int col =0, row =0, colinc =1, rowinc =0, switchvar;
+  for(int i= mDimension*mDimension-1; i>-1 ; i--){
+    mTempFace[row*mDimension+col] = Face[i];
+    if(col+colinc >= mDimension || row+rowinc >= mDimension ||
+       row+rowinc < 0 || mTempFace[(row+rowinc)*mDimension+col+colinc]!=0){
+      switchvar = colinc;
+      colinc    = -rowinc;
+      rowinc    = switchvar;
+    }
+    row += rowinc;
+    col += colinc;
+  }
+  for(int i=0; i< mDimension; i++){
+    for(int j=0; j< mDimension; j++){
+      Face[i*mDimension+j] =mTempFace[i*mDimension+j];
+    }
+  }
+}
+
+void Cube::CWspiral(int* Face){//Does this work for even cubes?
+
+  for(int i=0; i< mDimension; i++){
+    for(int j=0; j< mDimension; j++){
+      mTempFace[i*mDimension+j] =0;
+    }
+  }
+  int col =0, row =0, colinc =0, rowinc =1, switchvar;
+  for(int i= mDimension*mDimension-1; i>-1 ; i--){
+    mTempFace[row*mDimension+col] = Face[i];
+    if(col+colinc >= mDimension || row+rowinc >= mDimension ||
+       row+rowinc < 0 || mTempFace[(row+rowinc)*mDimension+col+colinc]!=0){
+      switchvar = rowinc;
+      rowinc    = -colinc;
+      colinc    = switchvar;
+    }
+    row += rowinc;
+    col += colinc;
+  }
+  for(int i=0; i< mDimension; i++){
+    for(int j=0; j< mDimension; j++){
+      Face[i*mDimension+j] =mTempFace[i*mDimension+j];
+    }
+  }
+}
+
+void Cube::Despiral(int* Face){
+  // if even: check bottom left or top right
+
+  // Initialise mTempFace
+  for(int i=0; i< mDimension; i++){
+    for(int j=0; j< mDimension; j++){
+      mTempFace[i*mDimension+j] =0;
+    }
+  }
+  if(mDimension%2==1){//could construct this in constructor?
+    int centreIndex = (mDimension+1)/2-1;
+    int row = centreIndex, col = centreIndex, colinc = 0, rowinc=-1, switchvar;
+    bool isNotInmTempFace;
+    for(int i = 0; i < mDimension*mDimension; i++){
+      mTempFace[i] = Face[row*mDimension+col];
+      isNotInmTempFace=true;
+      for(int j=0;j<i;j++){
+        if(mTempFace[j]==Face[(row-colinc)*mDimension+col+rowinc]){
+          isNotInmTempFace=false;
+        }
+      }
+      if(isNotInmTempFace){
+        switchvar = rowinc;
+        rowinc = -colinc;
+        colinc = switchvar;
+      }
+      row+=rowinc;
+      col+=colinc;
+      //from col/row inc perspective, the left is not filled, turn left
+      }
+    }//end odd
   else{
     std::cout << "Even dim Despiral: Not implemented yet" << "\n";
+}
+// Passes it to rotate
+
+for(int i=0; i< mDimension; i++){
+  for(int j=0; j< mDimension; j++){
+    Face[i*mDimension+j] =mTempFace[i*mDimension+j];
+  }
 }
 }
 
@@ -192,23 +273,13 @@ void Cube::DisplayInTerminal(){
   // Front Calculation ==================
   int col =0, row =0, colinc =1, rowinc =0, switchvar;
   //initialise front
+
   for(int i=0; i< mDimension; i++){
     for(int j=0; j< mDimension; j++){
-      mFace[i*mDimension+j] =0;
+      mFace[i*mDimension+j] = mCube[i*mDimension+j];
     }
   }
-  for(int i= mDimension*mDimension-1; i>-1 ; i--){
-    mFace[row*mDimension+col] = mCube[i];
-    if(col+colinc >= mDimension || row+rowinc >= mDimension ||
-       row+rowinc < 0 || mFace[(row+rowinc)*mDimension+col+colinc]!=0){
-      switchvar = colinc;
-      colinc    = -rowinc;
-      rowinc    = switchvar;
-    }
-    row += rowinc;
-    col += colinc;
-  }
-
+  Spiral(mFace);
 
   // Display =====================
   // Front -----------------------
@@ -274,27 +345,16 @@ void Cube::DisplayInTerminal(){
   }
   // Back Calculation ==================
   //initialise face
-  for(int i=0; i< mDimension; i++){
-    for(int j=0; j< mDimension; j++){
-      mFace[i*mDimension+j] =0;
-    }
+  int CounterFormFace = mDimension*mDimension-1;
+  for(int i= mCubeArraySize-mDimension*mDimension; i<mCubeArraySize ; i++){
+    mFace[CounterFormFace] = mCube[i];
+    CounterFormFace--;
   }
 
-  col =0, row =0, colinc =0, rowinc =1;
-  for(int i= mCubeArraySize-mDimension*mDimension; i<mCubeArraySize ; i++){
-    mFace[row*mDimension+col] = mCube[i];
-    if(col+colinc >= mDimension || row+rowinc >= mDimension ||
-       row+rowinc < 0 || mFace[(row+rowinc)*mDimension+col+colinc]!=0){
-      switchvar = rowinc;
-      rowinc    = -colinc;
-      colinc    = switchvar;
-    }
-    row += rowinc;
-    col += colinc;
-  }
+  CWspiral(mFace);
+
   // Back -----------------------
   std::cout << "Back:" << '\n';
-  // Front -----------------------
   for(int i=0; i < mDimension; i++){
     for(int j=0; j < mDimension; j++){
       spaces = ", ";
@@ -311,5 +371,6 @@ void Cube::DisplayInTerminal(){
 Cube::~Cube(){
   delete[] mCube;
   delete[] mFace;
+  delete[] mTempFace;
   delete[] mRotated;
 }

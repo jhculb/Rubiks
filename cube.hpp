@@ -23,7 +23,9 @@ class Cube
     int* mCube;
     int mDimension;
     int mCubeArraySize;
-    int* Despiral(int* Face);
+    void Spiral(int* Face);
+    void CWspiral(int* Face);
+    void Despiral(int* Face);
     int* Rotate(int Direction, int* Face);
     int* RotateCW(int* Face);
     int* RotateACW(int* Face);
