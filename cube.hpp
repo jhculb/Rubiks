@@ -8,17 +8,21 @@ class Cube
 {
   public:
     //To write default constructor - default private?
-    Cube(int dimension, bool verbose, bool autocheck);
+    Cube(const int dimension,const  bool verbose,const bool autocheck);
+    Cube();
 
-    void Front(bool Choice); // 1 == CW, 0 == ACW
-    void Back(bool Choice);
-    void Top(bool Choice);
-    void Bottom(bool Choice);
-    void Left(bool Choice);
-    void Right(bool Choice);
+    void SetCube(const int dimension, const bool verbose, const bool autocheck);
+
+    void Front(const bool Choice); // 1 == CW, 0 == ACW
+    void Back(const bool Choice);
+    void Top(const bool Choice);
+    void Bottom(const bool Choice);
+    void Left(const bool Choice);
+    void Right(const bool Choice);
 
     bool IsSolved();
     void DisplayInTerminal();
+
 
     ~Cube();
 
@@ -31,20 +35,22 @@ class Cube
     int mMaxDigits;
     bool mVerbose;
     bool mAutoCheck;
+    bool mSetup;
+
 
     int* mFace;
     int* mTempFace;
 
-    void Spiral(int* Face);
-    void SpiralBack(int* Face);
-    void Despiral(int* Face);
+    int* Spiral(const int* Face);
+    int* SpiralBack(const int* Face);
+    int* Despiral(const int* Face);
 
-    int* Rotate(bool Direction, int* Face);
-    int* RotateCW(int* Face);
-    int* RotateACW(int* Face);
+    void Rotate(const bool Direction);
+    void RotateCW();
+    void RotateACW();
 
     void ExecuteCubeDefinitions(std::string Action, bool Choice);
 
-    // Cube();
+
 };
 #endif

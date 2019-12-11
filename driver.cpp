@@ -1,12 +1,12 @@
 #include "cube.hpp"
 #include "IOfunctions.hpp"
-// #include <iostream>
+#include <iostream>
 
 int main(){
 
-  Cube cube = initialIO();
-
-  interactionLoop(cube);
+  Cube Jcube;
+  initialIO(&Jcube);
+  interactionLoop(Jcube);
 
   return 0;
 }

@@ -8,10 +8,10 @@
 // Enumeration
 enum commands{};
 
-Cube initialIO();
+void initialIO(Cube* myCube);
 
 commands hashit(std::string const& inString);
 
-void interactionLoop(Cube myCube);
+void interactionLoop(Cube &myCube);
 
 #endif

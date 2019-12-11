@@ -8,10 +8,18 @@
 int countDigits(double number);
 void sayRotation(std::string Side, bool direction);
 
-  //Max value 720 --- to include in constructor
+Cube::Cube(const int dimension, const bool verbose, const bool autocheck){
+  SetCube(dimension, verbose, autocheck);
+}
 
-Cube::Cube(int dimension, bool verbose, bool autocheck){
+Cube::Cube(){
+  mSetup = false;
+}
+
+void Cube::SetCube(const int dimension, const bool verbose,const bool autocheck)
+{
   //must be int, greater than 0
+  //Max value 720
   //assert()
   //1D has an error!
 
@@ -23,21 +31,15 @@ Cube::Cube(int dimension, bool verbose, bool autocheck){
   mCubeArraySize=pow(mDimension, 3)-pow(mDimension-2, 3);
 
   mCube = new int[mCubeArraySize];
-  for(int i=0; i< mCubeArraySize; i++){//
+  for(int i=0; i< mCubeArraySize; i++){
     mCube[i]= i+1;
   }
 
-  std::cout << "Constructing mcube front" << '\n';
-  for(int i=0;i<mDimension;i++){
-    for(int j=0;j<mDimension; j++){
-      std::cout << mCube[i*mDimension+j] << ", ";
-    }
-    std::cout << '\n';
-  }
   mMaxDigits = countDigits(mCube[mCubeArraySize-1]);
   mFace = new int[mDimension*mDimension]{};
   mTempFace = new int[mDimension*mDimension]{};
 
+  mSetup = true;
 }
 
 bool Cube::IsSolved(){
@@ -50,14 +52,8 @@ bool Cube::IsSolved(){
   return IsSolved;
 }
 
-void Cube::Front(bool Choice){
-  std::cout << "ROTATING front" << '\n';
-  for(int i=0;i<mDimension;i++){
-    for(int j=0;j<mDimension; j++){
-      std::cout << mCube[i*mDimension+j] << ", ";
-    }
-    std::cout << '\n';
-  }
+void Cube::Front(const bool Choice){
+
   //Makes a copy of the front
   for(int i=0;i<mDimension;i++){
     for(int j=0;j<mDimension;j++){
@@ -66,7 +62,7 @@ void Cube::Front(bool Choice){
   }
 
   // Passes it to rotate
-  mFace = Rotate(Choice, mFace);
+  Rotate(Choice);
   // Imposes over cube
   for(int i=0;i<mDimension;i++){
     for(int j=0;j<mDimension;j++){
@@ -76,14 +72,14 @@ void Cube::Front(bool Choice){
   ExecuteCubeDefinitions("Front",Choice);
 }
 
-void Cube::Back(bool Choice){
+void Cube::Back(const bool Choice){
   //Makes a copy of the front
   for(int i=0;i<mDimension;i++){
     for(int j=0;j<mDimension;j++){
       mFace[i*mDimension+j]=mCube[mCubeArraySize-(i*mDimension+j)-1];
     }
   }  // Passes it to rotate
-  mFace = Rotate(-Choice, mFace);
+  Rotate(Choice);
   for(int i=0;i<mDimension;i++){// Imposes over cube
     for(int j=0;j<mDimension;j++){
       mCube[mCubeArraySize-(i*mDimension+j)-1]=mFace[i*mDimension+j];
@@ -92,7 +88,7 @@ void Cube::Back(bool Choice){
   ExecuteCubeDefinitions("Back",Choice);
 }
 
-void Cube::Top(bool Choice){
+void Cube::Top(const bool Choice){
   // Calculates the Top
   for(int i=mDimension*mDimension-1; i>=0; i--){
     if(i%mDimension!=0){
@@ -116,8 +112,8 @@ void Cube::Top(bool Choice){
   }  // Passes it to rotate
 
   Despiral(mFace);
-  mFace = Rotate(Choice, mFace);
-  Spiral(mFace);
+  Rotate(Choice);
+  mFace = Spiral(mFace);
 
   for(int i=mDimension*mDimension-1; i>=0; i--){// Imposes over cube
     if(i%mDimension!=0){
@@ -138,7 +134,7 @@ void Cube::Top(bool Choice){
   ExecuteCubeDefinitions("Top",Choice);
 }
 
-void Cube::Bottom(bool Choice){
+void Cube::Bottom(const bool Choice){
 
   for(int i=mDimension*mDimension-1; i>=0; i--){
     if(i/mDimension==mDimension-1){// Bottom row, first slice off by one
@@ -152,8 +148,8 @@ void Cube::Bottom(bool Choice){
   }
 
   Despiral(mFace);
-  mFace = Rotate(Choice, mFace);
-  Spiral(mFace);
+  Rotate(Choice);
+  mFace = Spiral(mFace);
 
   for(int i=mDimension*mDimension-1; i>=0; i--){
       if(i/mDimension==mDimension-1){// Bottom row, first slice off by one
@@ -168,7 +164,7 @@ void Cube::Bottom(bool Choice){
   ExecuteCubeDefinitions("Bottom",Choice);
 }
 
-void Cube::Left(bool Choice){
+void Cube::Left(const bool Choice){
 
   for(int i=0; i<mDimension;i++){
     for(int j=0; j<mDimension;j++){
@@ -186,8 +182,8 @@ void Cube::Left(bool Choice){
   }
 
   Despiral(mFace);
-  mFace = Rotate(Choice, mFace);
-  Spiral(mFace);
+  Rotate(Choice);
+  mFace = Spiral(mFace);
 
   for(int i=0; i<mDimension;i++){
     for(int j=0; j<mDimension;j++){
@@ -206,7 +202,7 @@ void Cube::Left(bool Choice){
   ExecuteCubeDefinitions("Left",Choice);
 }
 
-void Cube::Right(bool Choice){
+void Cube::Right(const bool Choice){
 
   for(int i=0; i<mDimension;i++){
     for(int j=0; j<mDimension;j++){
@@ -221,8 +217,8 @@ void Cube::Right(bool Choice){
   }
 
   Despiral(mFace);
-  mFace = Rotate(Choice, mFace);
-  Spiral(mFace);
+  Rotate(Choice);
+  mFace = Spiral(mFace);
 
   for(int i=0; i<mDimension;i++){
     for(int j=0; j<mDimension;j++){
@@ -240,7 +236,7 @@ void Cube::Right(bool Choice){
   ExecuteCubeDefinitions("Right",Choice);
 }
 
-void Cube::Spiral(int* Face){
+int* Cube::Spiral(const int* Face){
 
   for(int i=0; i< mDimension; i++){
     for(int j=0; j< mDimension; j++){
@@ -259,14 +255,10 @@ void Cube::Spiral(int* Face){
     row += rowinc;
     col += colinc;
   }
-  for(int i=0; i< mDimension; i++){
-    for(int j=0; j< mDimension; j++){
-      Face[i*mDimension+j] =mTempFace[i*mDimension+j];
-    }
-  }
+  return(mTempFace);
 }
 
-void Cube::SpiralBack(int* Face){
+int* Cube::SpiralBack(const int* Face){
 
   for(int i=0; i< mDimension; i++){
     for(int j=0; j< mDimension; j++){
@@ -285,34 +277,31 @@ void Cube::SpiralBack(int* Face){
     row += rowinc;
     col += colinc;
   }
-  for(int i=0; i< mDimension; i++){
-    for(int j=0; j< mDimension; j++){
-      Face[i*mDimension+j] =mTempFace[i*mDimension+j];
-    }
-  }
+  return(mTempFace);
 }
 
-void Cube::Despiral(int* Face){
+int* Cube::Despiral(const int* Face){
 
   for(int i=0; i< mDimension; i++){// Initialise mTempFace
     for(int j=0; j< mDimension; j++){
       mTempFace[i*mDimension+j] =0;
     }
   }
-  int centreIndex,row, col, colinc, rowinc, switchvar;
+
+  int centreIndex,row, col, colinc, rowinc, switchvar; //Initalise variables
   if(mDimension%2==1){// If odd dimension
     centreIndex = mDimension/2-1;
     // Don't need to adjust for odd division as integer divide
     std::cout << "centreIndex" << '\n';
-    row     = centreIndex;
+    row     = centreIndex;// Starting position
     col     = centreIndex;
-    colinc  = 0;
+    colinc  = 0;// Direction
     rowinc  =-1;
   }else{// Is even (start from centre square, bottom left)
     centreIndex = mDimension/2;
-    row     = centreIndex;
+    row     = centreIndex;// Starting position
     col     = centreIndex-1;
-    colinc  = 0;
+    colinc  = 0;// Direction
     rowinc  = 1;
   }
 
@@ -334,61 +323,46 @@ void Cube::Despiral(int* Face){
     row+=rowinc;
     col+=colinc;
   }
-  for(int i=0; i< mDimension; i++){
-    for(int j=0; j< mDimension; j++){
-      Face[i*mDimension+j] =mTempFace[i*mDimension+j];
-    }
-  }
+  return(mTempFace);
 }
 
-int* Cube::Rotate(bool Direction, int* Face){//Is face neccesary
+void Cube::Rotate(const bool Direction){
 
   if(Direction==1){
-    mFace = RotateCW(mFace);
+    RotateCW();
   }else if(Direction==0){
-    mFace = RotateACW(mFace);
-  }else
-  {
+    RotateACW();
+  }else{
     std::cerr << "Not -1 / 1, error handle" << '\n';
   }
-  return mFace;
 }
 
-int* Cube::RotateCW(int* Face){
-
-  std::cout << "ROTATING" << '\n';
-  for(int i=0;i<mDimension;i++){
-    for(int j=0;j<mDimension; j++){
-      std::cout << Face[i*mDimension+j] << ", ";
-    }
-    std::cout << '\n';
-  }
-  int switchvar;
-  for(int i=2+mDimension%2;i<=mDimension;i+=2){
-    for(int j=0;j<i-1;j++){
-      switchvar              = Face[i*i-j-(i-1)*3-1]; // Store 3
-      Face[i*i-j-(i-1)*3-1]  = Face[i*i-j-(i-1)*2-1]; // 5 overwriting 3
-      Face[i*i-j-(i-1)*2-1]  = Face[i*i-j-(i-1)-1] ;  // 7 overwriting 5
-      Face[i*i-j-(i-1)-1]    = Face[i*i-j-1];         // 9 overwriting 7
-      Face[i*i-j-1]          = switchvar;             // 3 overwriting 9
-    }
-  }
-  return Face;
-}
-
-int* Cube::RotateACW(int* Face){
+void Cube::RotateCW(){
 
   int switchvar;
   for(int i=2+mDimension%2;i<=mDimension;i+=2){
     for(int j=0;j<i-1;j++){
-      switchvar              = Face[i*i-j-(i-1)*3-1]; // Store 3
-      Face[i*i-j-(i-1)*3-1]  = Face[i*i-j-1];         // 9 overwriting 3
-      Face[i*i-j-1]          = Face[i*i-j-(i-1)-1];   // 7 overwriting 9
-      Face[i*i-j-(i-1)-1]    = Face[i*i-j-(i-1)*2-1]; // 5 overwriting 7
-      Face[i*i-j-(i-1)*2-1]  = switchvar;             // 3 overwriting 5
+      switchvar              = mFace[i*i-j-(i-1)*3-1]; // Store 3
+      mFace[i*i-j-(i-1)*3-1]  = mFace[i*i-j-(i-1)*2-1]; // 5 overwriting 3
+      mFace[i*i-j-(i-1)*2-1]  = mFace[i*i-j-(i-1)-1] ;  // 7 overwriting 5
+      mFace[i*i-j-(i-1)-1]    = mFace[i*i-j-1];         // 9 overwriting 7
+      mFace[i*i-j-1]          = switchvar;             // 3 overwriting 9
     }
   }
-  return Face;
+}
+
+void Cube::RotateACW(){
+
+  int switchvar;
+  for(int i=2+mDimension%2;i<=mDimension;i+=2){
+    for(int j=0;j<i-1;j++){
+      switchvar              = mFace[i*i-j-(i-1)*3-1]; // Store 3
+      mFace[i*i-j-(i-1)*3-1]  = mFace[i*i-j-1];         // 9 overwriting 3
+      mFace[i*i-j-1]          = mFace[i*i-j-(i-1)-1];   // 7 overwriting 9
+      mFace[i*i-j-(i-1)-1]    = mFace[i*i-j-(i-1)*2-1]; // 5 overwriting 7
+      mFace[i*i-j-(i-1)*2-1]  = switchvar;             // 3 overwriting 5
+    }
+  }
 }
 
 void Cube::DisplayInTerminal(){
@@ -492,7 +466,6 @@ void Cube::DisplayInTerminal(){
 
 void Cube::ExecuteCubeDefinitions(std::string Action, bool Choice){
 
-  DisplayInTerminal();
   if(mVerbose){
     sayRotation(Action,Choice);
   }

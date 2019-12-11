@@ -8,7 +8,7 @@ enum commands{
   eLeftN,  eRight,  eRightN,  eExit,  eHelp, eShow, eCheck
 };
 
-Cube initialIO(){
+void initialIO(Cube* myCube){
 
   int cubeDim;
   bool unallowableInput =true, inputBool, autoInputBool;
@@ -63,8 +63,7 @@ Cube initialIO(){
   std::cout << "Creating " << cubeDim<<" by "<< cubeDim << " Cube" << '\n';
   if(inputBool){std::cout << "Verbose output" << '\n';}
 
-  Cube myCube(cubeDim,inputBool,autoInputBool);
-  return(myCube);
+  myCube->SetCube(cubeDim,inputBool,autoInputBool);
 }
 
 commands hashit(std::string const& inString){
@@ -106,7 +105,7 @@ commands hashit(std::string const& inString){
   }
 }
 
-void interactionLoop(Cube myCube){
+void interactionLoop(Cube &myCube){
   bool inputBool = true;
   std::string inputString;
   while (inputBool) {
