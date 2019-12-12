@@ -3,8 +3,6 @@
 
 int main()
 {
-  Cube myCube1(1,false,false);
-  myCube1.DisplayInTerminal();
   Cube myCube2(2,false,false);
   myCube2.DisplayInTerminal();
   Cube myCube3(3,false,false);

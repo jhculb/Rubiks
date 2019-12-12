@@ -40,6 +40,7 @@ void Cube::SetCube(const int dimension, const bool verbose,const bool autocheck)
     mMaxDigits = countDigits(mCube[mCubeArraySize-1]);
     mFace = new int[mDimension*mDimension]{};
     mTempFace = new int[mDimension*mDimension]{};
+    mMiddleFace = new int[mDimension*mDimension]{};
 
     mSetup = true;
   }else{
@@ -242,6 +243,7 @@ void Cube::Right(const bool Choice){
 }
 
 void Cube::MiddleVertical(int Slice){
+  // Direction and slice detection
   bool mDirection;
   if(Slice<0){
     mDirection = 0;
@@ -250,29 +252,73 @@ void Cube::MiddleVertical(int Slice){
     mDirection = 1;
   }
 
-  assert(Slice<mDimension-1);
+  // Assertions and input validation
+  assert(Slice<mDimension-1); // Should use if and cerr, assertion failed isn't v. helpful
   assert(Slice>0);
-  // Front of Slice
+
+  // Front of Slice -- The cubes on the front face
   for(int i =0; i<mDimension*mDimension; i++){
-    mTempFace[i]=mCube[i];
-    mFace[i]=0; // Initialise mTempFace;
+    mFace[i]=mCube[i];
+    mMiddleFace[i]=0; // Initialise mTempFace;
   }
   Spiral(mFace);
   for(int i=0;i<mDimension;i++){
-    mFace[mDimension*i]=mTempFace[mDimension*i+Slice];
+    mMiddleFace[i*mDimension]=mFace[mDimension*i+Slice];
   }
 
+  // Back of Slice -- The cubes on the Back face
   for(int i =0; i<mDimension*mDimension; i++){
-    mTempFace[i]=mCube[mCubeArraySize-1-i];
+    mFace[i]=mCube[mCubeArraySize-1-i];
   }
-  Spiral(mFace);
+  SpiralBack(mFace);
   for(int i=0;i<mDimension;i++){
-    mFace[i*mDimension+mDimension-1]=mTempFace[i*mDimension+Slice];
+    mMiddleFace[i*mDimension+mDimension-1]=mFace[i*mDimension+Slice];
   }
+
+  // Inbetween cubes
+  for(int i=0;i<mDimension-2;i++){
+    mMiddleFace[i+1] // Top row
+    = mCube[mDimension*(mDimension+1)+4*(mDimension-1)*i+2*(mDimension-1)+(mDimension-Slice)-2];
+
+    mMiddleFace[mDimension*(mDimension-1)+i+1] // Bottom row
+    = mCube[mDimension*(mDimension+1)+4*(mDimension-1)*i+Slice-1];
+  }
+  debugmMiddleFace();
+  Rotate(mDirection);
+  debugmMiddleFace();
 }
 
 void Cube::MiddleHorizontal(int Slice){
+  // Direction and slice detection
+  bool mDirection;
+  if(Slice<0){
+    mDirection = 0;
+    Slice = -1*Slice;
+  }else{
+    mDirection = 1;
+  }
 
+  // Assertions and input validation
+  assert(Slice<mDimension-1); // Should use if and cerr, assertion failed isn't v. helpful
+  assert(Slice>0);
+
+  // Front of Slice -- The cubes on the front face
+  for(int i =0; i<mDimension*mDimension; i++){
+    mFace[i]=mCube[i];
+    mMiddleFace[i]=0; // Initialise mTempFace;
+  }
+  SpiralBack(mFace); // Does this work?????
+  for(int i=0;i<mDimension;i++){
+    mMiddleFace[i*mDimension]=mFace[mDimension*i+Slice];
+  }
+  // Back of Slice -- The cubes on the Back face
+  for(int i =0; i<mDimension*mDimension; i++){
+    mFace[i]=mCube[mCubeArraySize-1-i];
+  }
+  Spiral(mFace);
+  for(int i=0;i<mDimension;i++){
+    mMiddleFace[i*mDimension+mDimension-1]=mFace[i*mDimension+Slice];
+  }
 }
 
 void Cube::Spiral(int* Face){
@@ -537,6 +583,7 @@ Cube::~Cube(){
   delete[] mCube;
   delete[] mFace;
   delete[] mTempFace;
+  delete[] mMiddleFace;
 }
 
 void sayRotation(std::string Side, bool direction){
@@ -553,10 +600,30 @@ void sayRotation(std::string Side, bool direction){
 }
 
 void Cube::debugmFace(){
-  std::cout << "Debugging Mface:" << '\n';
+  std::cout << "Debugging mFace:" << '\n';
   for(int i=0;i<mDimension;i++){
     for(int j=0;j<mDimension;j++){
       std::cout << mFace[i*mDimension+j] << ", ";
+    }
+    std::cout << '\n';
+  }
+}
+
+void Cube::debugmTempFace(){
+  std::cout << "Debugging mTempFace:" << '\n';
+  for(int i=0;i<mDimension;i++){
+    for(int j=0;j<mDimension;j++){
+      std::cout << mTempFace[i*mDimension+j] << ", ";
+    }
+    std::cout << '\n';
+  }
+}
+
+void Cube::debugmMiddleFace(){
+  std::cout << "Debugging mMiddleFace:" << '\n';
+  for(int i=0;i<mDimension;i++){
+    for(int j=0;j<mDimension;j++){
+      std::cout << mMiddleFace[i*mDimension+j] << ", ";
     }
     std::cout << '\n';
   }

@@ -19,8 +19,9 @@ class Cube
     void Bottom(const bool Choice);
     void Left(const bool Choice);
     void Right(const bool Choice);
-    // Right side Bias in rotation, count from left
+    // Right side Bias in rotation, count from front == left to back == right
     void MiddleVertical(int Slice);
+    // Top side bias, top==back?
     void MiddleHorizontal(int Slice);
 
     bool IsSolved();
@@ -43,6 +44,7 @@ class Cube
 
     int* mFace;
     int* mTempFace;
+    int* mMiddleFace;
 
     void Spiral(int* Face);
     void SpiralBack(int* Face);
@@ -55,5 +57,7 @@ class Cube
     void ExecuteCubeDefinitions(std::string Action, bool Choice);
 
     void debugmFace();
+    void debugmTempFace();
+    void debugmMiddleFace();
 };
 #endif

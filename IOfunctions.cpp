@@ -30,7 +30,7 @@ void initialIO(Cube* myCube){
 
   unallowableInput = true;
   while(unallowableInput){
-    std::cout<< '\n' << "Action feedback? (y/n): " << '\n';
+    std::cout<< '\n' << "Action feedback? (y/n): ";
     std::cin >> inputString;
 
     if(inputString == "y"|| inputString == "Y"){
@@ -46,7 +46,7 @@ void initialIO(Cube* myCube){
 
   unallowableInput = true;
   while(unallowableInput){
-    std::cout<< '\n' << "Auto-respond when solved? (y/n): " << '\n';
+    std::cout<< '\n' << "Auto-respond when solved? (y/n): ";
     std::cin >> inputString;
 
     if(inputString == "y"|| inputString == "Y"){
@@ -100,13 +100,13 @@ commands hashit(std::string const& inString){
     }else if(inString.substr(0,2)=="mh"){
       return(eMiddleH);
     }
-  }else if(inString == "exit"){
+  }else if(inString == "exit"||inString =="Exit"){
     return(eExit);
   }else if(inString == "s"){
     return(eShow);
   }else if(inString == "c"){
     return(eCheck);
-  }else if(inString == "help"){
+  }else if(inString == "help"||inString =="Help"){
     return(eHelp);
   }else {
     return(eHelp);
