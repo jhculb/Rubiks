@@ -19,6 +19,9 @@ class Cube
     void Bottom(const bool Choice);
     void Left(const bool Choice);
     void Right(const bool Choice);
+    // Right side Bias in rotation, count from left
+    void MiddleVertical(int Slice);
+    void MiddleHorizontal(int Slice);
 
     bool IsSolved();
     void DisplayInTerminal();

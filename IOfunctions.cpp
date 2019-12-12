@@ -5,7 +5,7 @@
 
 enum commands{
   eFront,  eFrontN,  eBack,  eBackN,  eTop,  eTopN,  eBottom,  eBottomN,  eLeft,
-  eLeftN,  eRight,  eRightN,  eExit,  eHelp, eShow, eCheck
+  eLeftN,  eRight,  eRightN, eMiddleV, eMiddleH,  eExit,  eHelp, eShow, eCheck
 };
 
 void initialIO(Cube* myCube){
@@ -94,6 +94,12 @@ commands hashit(std::string const& inString){
     return(eRight);
   }else if(inString == "rn"){
     return(eRightN);
+  }else if(inString.length()>=3){
+    if(inString.substr(0,2)=="mv"){
+      return(eMiddleV);
+    }else if(inString.substr(0,2)=="mh"){
+      return(eMiddleH);
+    }
   }else if(inString == "exit"){
     return(eExit);
   }else if(inString == "s"){
@@ -150,6 +156,14 @@ void interactionLoop(Cube &myCube){
       case eRightN:
         myCube.Right(0);
         break;
+      case eMiddleV:
+        // Pass on everything as an integer after the 2nd character
+        myCube.MiddleVertical(std::stoi(inputString.substr(2)));
+        break;
+      case eMiddleH:
+        // Pass on everything as an integer after the 2nd character
+        myCube.MiddleHorizontal(std::stoi(inputString.substr(2)));
+        break;
       case eExit:
         inputBool=false;
         break;
@@ -175,6 +189,10 @@ void interactionLoop(Cube &myCube){
         << "ln,   Rotate left of cube anticlockwise"<< '\n'
         << "r,    Rotate right of cube clockwise"<< '\n'
         << "rn,   Rotate right of cube anticlockwise"<< '\n'
+        << "mv*,  Rotate right of cube anticlockwise"<< '\n'
+        << "mh*,  Rotate right of cube anticlockwise"<< '\n'
+        << "s,    Display cube"<< '\n'
+        << "c,    Check if cube is solved"<< '\n'
         << "help, exit"<< '\n';
         break;
     }

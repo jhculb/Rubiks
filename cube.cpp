@@ -241,6 +241,40 @@ void Cube::Right(const bool Choice){
   ExecuteCubeDefinitions("Right",Choice);
 }
 
+void Cube::MiddleVertical(int Slice){
+  bool mDirection;
+  if(Slice<0){
+    mDirection = 0;
+    Slice = -1*Slice;
+  }else{
+    mDirection = 1;
+  }
+
+  assert(Slice<mDimension-1);
+  assert(Slice>0);
+  // Front of Slice
+  for(int i =0; i<mDimension*mDimension; i++){
+    mTempFace[i]=mCube[i];
+    mFace[i]=0; // Initialise mTempFace;
+  }
+  Spiral(mFace);
+  for(int i=0;i<mDimension;i++){
+    mFace[mDimension*i]=mTempFace[mDimension*i+Slice];
+  }
+
+  for(int i =0; i<mDimension*mDimension; i++){
+    mTempFace[i]=mCube[mCubeArraySize-1-i];
+  }
+  Spiral(mFace);
+  for(int i=0;i<mDimension;i++){
+    mFace[i*mDimension+mDimension-1]=mTempFace[i*mDimension+Slice];
+  }
+}
+
+void Cube::MiddleHorizontal(int Slice){
+
+}
+
 void Cube::Spiral(int* Face){
 
   for(int i=0; i< mDimension; i++){
