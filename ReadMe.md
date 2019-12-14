@@ -43,6 +43,9 @@ so that it can act on mMiddleFace in MiddleVertical & MiddleHorizontal
 vector and iterate through these (i.e. in the MiddleVertical replacement steps)?
 3. Spiral &c, may have isNotInmTempFace removed?
 4. RowCalcFormatting do you need break after return?
+5. MiddleVertical & MiddleHorizontal swap mMiddleFace & mFace roles in early
+lines to remove need to switch?
+6. MiddleVertical & MiddleHorizontal replacement replace only row not face?
 
 ## Possible bug list
 1. MiddleVertical & MiddleHorizontal use integers above mCube max size, possible
@@ -50,7 +53,16 @@ vector and iterate through these (i.e. in the MiddleVertical replacement steps)?
 2. While rotating middle vertically a pointer seemed to get accessed rather than
  an array element, cannot reproduce currently with interface as a history was
 not implemented. May have accidentally used mh rather than mv. Believed to be in
- Front of slice - mMiddleFace being set or mface being spiraled. 
+ Front of slice - mMiddleFace being set or mface being spiraled.
+ 3. Sim to previous two pointers found. input list:
+ mh2, b, b, b, b, b, b, b, b, b, b, b, b, b, b, b, b, b, mh-1, m, b, b, b, b, b, b, mh-1, mh-1, mh-1, mh1, mh1, mh2, mh3, help, h,
+
+ Back:  
+1,  4,  3,  75, 6,  
+-778462756,   5,  8,  9,  10,  
+201365264, 78, 1,  2,  80,  
+20, 1,  -778462756,   201365264, 20,  
+48, 47, 46, 85, 86,  
 
 ## Known bug list
 1. entering 2 into dimension input {IOfunctions} loops infinitely

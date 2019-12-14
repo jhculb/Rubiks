@@ -275,12 +275,12 @@ void Cube::MiddleVertical(int Slice){
   }
   Spiral(mFace); // Arrange mFace in spacial
 
-  debugmMiddleFace();
+  // debugmMiddleFace();
   for(int i=0;i<mDimension;i++){
     mMiddleFace[i*mDimension]=mFace[mDimension*i+Slice];
   }
 
-    debugmMiddleFace();
+    // debugmMiddleFace();
   // Back of Slice -- The cubes on the Back face
   for(int i =0; i<mDimension*mDimension; i++){
     mFace[i]=mCube[mCubeArraySize-1-i];
@@ -290,7 +290,7 @@ void Cube::MiddleVertical(int Slice){
     mMiddleFace[i*mDimension+mDimension-1]=mFace[i*mDimension+Slice];
   }
 
-  debugmMiddleFace();
+  // debugmMiddleFace();
   // Inbetween slices
   for(int i=0;i<mDimension-2;i++){
     mMiddleFace[i+1] // Top row
@@ -304,11 +304,11 @@ void Cube::MiddleVertical(int Slice){
   for(int i = 0; i<mDimension*mDimension;i++){
     mFace[i] = mMiddleFace[i]; // Required for rotate
   }
-  debugmFace();
+  // debugmFace();
   Despiral(mFace); // Required unique ints = why large padding numbers used
   Rotate(mDirection);
   Spiral(mFace);
-  debugmFace();
+  // debugmFace();
   // Front of Slice -- The cubes on the front face
   // Remove added values
   for(int i=0;i<mDimension;i++){
@@ -334,7 +334,7 @@ void Cube::MiddleVertical(int Slice){
 
   // Back row replacement
 
-  debugmFace();
+  // debugmFace();
   for(int i =0; i<mDimension*mDimension; i++){
     mMiddleFace[i]=mCube[mCubeArraySize-1-i];
   }
@@ -342,9 +342,9 @@ void Cube::MiddleVertical(int Slice){
   for(int i=0;i<mDimension;i++){
     mMiddleFace[i*mDimension+Slice]=mFace[i*mDimension+mDimension-1];
   }
-  debugmMiddleFace();
+  // debugmMiddleFace();
   DespiralBack(mMiddleFace);
-  debugmMiddleFace();
+  // debugmMiddleFace();
   for(int i =0; i<mDimension*mDimension; i++){
     mCube[mCubeArraySize-1-i]=mMiddleFace[i];
   }
@@ -359,8 +359,9 @@ void Cube::MiddleVertical(int Slice){
     = mFace[mDimension*(mDimension-1)+i+1];
   }
 
-  DisplayInTerminal();
-  ExecuteCubeDefinitions("Middle "+NumberFormatting(Slice)+" Column",mDirection);
+  // DisplayInTerminal();
+  ExecuteCubeDefinitions("Middle "+NumberFormatting(Slice)+" Column",mDirection)
+  ;
 }
 
 void Cube::MiddleHorizontal(int Slice){
@@ -374,49 +375,114 @@ void Cube::MiddleHorizontal(int Slice){
   }
 
   // Assertions and input validation
-  assert(Slice<mDimension-1); // Should use if and cerr, assertion failed isn't v. helpful
-  assert(Slice>0);
+  if(Slice>=mDimension-1){
+    std::cout << "Input out of bounds: Please input number less than "
+    << mDimension-1 << '\n';
+    return;
+  }
+  if(Slice<=0){
+    std::cout << "Input out of bounds: Please input number greater than 0"
+    << '\n';
+    return;
+  }
 
   // Front of Slice -- The cubes on the front face
   for(int i =0; i<mDimension*mDimension; i++){
-    mFace[i]=mCube[i];
-    mMiddleFace[i]=mCube[mCubeArraySize-1]+i+1;
-    /* Initialise mTempFace; with variables larger than any in the cube
-    (for Despiral, as it requires unique entries)
+    mFace[i]=mCube[i]; // Fill mFace with the front
+    mMiddleFace[i]=-mCube[mCubeArraySize-1]+i;
+    /* Initialise mMiddleFace with variables larger than any in the cube
+    (for Despiral, as it requires unique entries) -- called padding values
     - possible weak spot for integer overflow*/
   }
-  SpiralBack(mFace);
+  Spiral(mFace); // Arrange mFace in spacial
+
+  // debugmMiddleFace();
   for(int i=0;i<mDimension;i++){
-    mMiddleFace[i*mDimension]=mFace[mDimension*i+Slice];
+    mMiddleFace[i*mDimension]=mFace[mDimension*Slice+i];
   }
+
+    // debugmMiddleFace();
   // Back of Slice -- The cubes on the Back face
   for(int i =0; i<mDimension*mDimension; i++){
     mFace[i]=mCube[mCubeArraySize-1-i];
   }
-  Spiral(mFace);
+  SpiralBack(mFace);
   for(int i=0;i<mDimension;i++){
-    mMiddleFace[i*mDimension+mDimension-1]=mFace[i*mDimension+Slice];
+    mMiddleFace[i*mDimension+mDimension-1]=mFace[mDimension*Slice+i];
   }
 
+  debugmMiddleFace();
+  // Inbetween slices
+  for(int i=0;i<mDimension-2;i++){
+    mMiddleFace[i+1] // Top row
+    = mCube[mDimension*(mDimension+1)+4*(mDimension-1)*Slice+2*(mDimension-1)
+    +(mDimension-i)-2];
 
-  // Replaced MiddleVertical with Horizontal on back
+    mMiddleFace[mDimension*(mDimension-1)+i+1] // Bottom row
+    = mCube[mDimension*(mDimension+1)+4*(mDimension-1)*Slice+i-1];
+  }
 
-    debugmFace();
+  for(int i = 0; i<mDimension*mDimension;i++){
+    mFace[i] = mMiddleFace[i]; // Required for rotate
+  }
+  debugmFace();
+  Despiral(mFace); // Required unique ints = why large padding numbers used
+  Rotate(mDirection);
+  Spiral(mFace);
+  // debugmFace();
+  // Front of Slice -- The cubes on the front face
+  // Remove added values
+  for(int i=0;i<mDimension;i++){
+    for(int j=0;j<mDimension;j++){
+      if(i>0 && i<mDimension-1 && j>0 && j<mDimension-1){
+        mFace[i*mDimension+j]=0; // Remove centre values (padding values)
+      }
+      mMiddleFace[i*mDimension+j]=0; // delete mMiddleFace
+    }
+  }
+  // Front row replacement
+  for(int i =0; i<mDimension*mDimension; i++){
+    mMiddleFace[i]=mCube[i];
+  }
+  Spiral(mMiddleFace);
+  for(int i=0;i<mDimension;i++){
+    mMiddleFace[Slice*mDimension+i]=mFace[mDimension*i];
+  }
+  Despiral(mMiddleFace);
     for(int i =0; i<mDimension*mDimension; i++){
-      mMiddleFace[i]=mCube[mCubeArraySize-1-i];
-    }
-    Spiral(mMiddleFace);
-    for(int i=0;i<mDimension;i++){
-      mMiddleFace[i*mDimension+Slice]=mFace[i*mDimension+mDimension-1];
-    }
-    debugmMiddleFace();
-    Despiral(mMiddleFace);
-    debugmMiddleFace();
-      for(int i =0; i<mDimension*mDimension; i++){
-      mCube[mCubeArraySize-1-i]=mMiddleFace[i];
-    }
-    DisplayInTerminal();
+    mCube[i]=mMiddleFace[i];
+  }
 
+  // Back row replacement
+
+  // debugmFace();
+  for(int i =0; i<mDimension*mDimension; i++){
+    mMiddleFace[i]=mCube[mCubeArraySize-1-i];
+  }
+  SpiralBack(mMiddleFace);
+  for(int i=0;i<mDimension;i++){
+    mMiddleFace[Slice*mDimension+i]=mFace[i*mDimension+mDimension-1];
+  }
+  // debugmMiddleFace();
+  DespiralBack(mMiddleFace);
+  // debugmMiddleFace();
+  for(int i =0; i<mDimension*mDimension; i++){
+    mCube[mCubeArraySize-1-i]=mMiddleFace[i];
+  }
+
+  // Inbetween slices replacement
+  for(int i=0;i<mDimension-2;i++){
+    mCube[mDimension*(mDimension+1)+4*(mDimension-1)*Slice+2*(mDimension-1)
+    +(mDimension-i)-2] = mFace[i+1];
+
+  // Bottom row
+    mCube[mDimension*(mDimension+1)+4*(mDimension-1)*Slice+i-1]
+    = mFace[mDimension*(mDimension-1)+i+1];
+  }
+
+  DisplayInTerminal();
+  ExecuteCubeDefinitions("Middle "+NumberFormatting(Slice)+" Row",mDirection)
+  ;
 }
 
 void Cube::Spiral(int* Face){
