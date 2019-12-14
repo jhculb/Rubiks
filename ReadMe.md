@@ -43,6 +43,8 @@ vector and iterate through these (i.e. in the MiddleVertical replacement steps)?
 5. MiddleVertical & MiddleHorizontal swap mMiddleFace & mFace roles in early
 lines to remove need to switch?
 6. MiddleVertical & MiddleHorizontal replacement replace only row not face?
+7. Possible (with major efficiency gains & major recoding): Store mCube,
+prespiraled. I.e. in constructor spiral it. 
 
 ## Possible bug list
 1. MiddleVertical & MiddleHorizontal use integers above mCube max size, possible
