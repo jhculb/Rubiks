@@ -29,10 +29,7 @@ graphical representations.
 ## To-Do list:
 
 1. Cube development [Cube.cpp]:
-  1. Establish Middle Vertical and Horizontal rotations
-    1. Identify slice {Done}
-    2. Rotate slice {Done MV not MH}
-    3. Replace slice in cube
+  1. Establish Middle Vertical and Horizontal rotations {Done but buggy}
   2. (Low priority, implement )
   2. Develop API
 
