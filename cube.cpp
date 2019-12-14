@@ -259,7 +259,10 @@ void Cube::MiddleVertical(int Slice){
   // Front of Slice -- The cubes on the front face
   for(int i =0; i<mDimension*mDimension; i++){
     mFace[i]=mCube[i];
-    mMiddleFace[i]=0; // Initialise mTempFace;
+    mMiddleFace[i]=mCube[mCubeArraySize-1]+i+1;
+    /* Initialise mTempFace; with variables larger than any in the cube
+    (for Despiral, as it requires unique entries)
+    - possible weak spot for integer overflow*/
   }
   Spiral(mFace);
   for(int i=0;i<mDimension;i++){
@@ -283,8 +286,25 @@ void Cube::MiddleVertical(int Slice){
     mMiddleFace[mDimension*(mDimension-1)+i+1] // Bottom row
     = mCube[mDimension*(mDimension+1)+4*(mDimension-1)*i+Slice-1];
   }
-  debugmMiddleFace();
+
+  for(int i = 0; i<mDimension*mDimension;i++){
+    mFace[i] = mMiddleFace[i];
+  }
+  debugmFace();
+  Despiral(mFace);
   Rotate(mDirection);
+  Spiral(mFace);
+  debugmFace();
+
+  // Front of Slice -- The cubes on the front face
+  // for(int i =0; i<mDimension*mDimension; i++){
+  //   mCube[i]=mFace[i];
+  // }
+  for(int i=0;i<mDimension;i++){
+    mMiddleFace[i*mDimension]=mFace[mDimension*i+Slice];
+  }
+  debugmMiddleFace();
+  Spiral(mMiddleFace);
   debugmMiddleFace();
 }
 
@@ -305,9 +325,12 @@ void Cube::MiddleHorizontal(int Slice){
   // Front of Slice -- The cubes on the front face
   for(int i =0; i<mDimension*mDimension; i++){
     mFace[i]=mCube[i];
-    mMiddleFace[i]=0; // Initialise mTempFace;
+    mMiddleFace[i]=mCube[mCubeArraySize-1]+i+1;
+    /* Initialise mTempFace; with variables larger than any in the cube
+    (for Despiral, as it requires unique entries)
+    - possible weak spot for integer overflow*/
   }
-  SpiralBack(mFace); // Does this work?????
+  SpiralBack(mFace);
   for(int i=0;i<mDimension;i++){
     mMiddleFace[i*mDimension]=mFace[mDimension*i+Slice];
   }
@@ -383,8 +406,7 @@ void Cube::Despiral(int* Face){
 
   int centreIndex,row, col, colinc, rowinc, switchvar; //Initalise variables
   if(mDimension%2==1){// If odd dimension
-    centreIndex = mDimension/2-1;
-    // Don't need to adjust for odd division as integer divide
+    centreIndex = (mDimension+1)/2-1;
     std::cout << "centreIndex" << '\n';
     row     = centreIndex;// Starting position
     col     = centreIndex;
