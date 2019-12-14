@@ -5,7 +5,8 @@
 
 enum commands{
   eFront,  eFrontN,  eBack,  eBackN,  eTop,  eTopN,  eBottom,  eBottomN,  eLeft,
-  eLeftN,  eRight,  eRightN, eMiddleV, eMiddleH,  eExit,  eHelp, eShow, eCheck
+  eLeftN,  eRight,  eRightN, eMiddleV, eMiddleH,  eExit,  eHelp, eShow, eCheck,
+  eHistory
 };
 
 void initialIO(Cube* myCube){
@@ -104,6 +105,8 @@ commands hashit(std::string const& inString){
     return(eExit);
   }else if(inString == "s"){
     return(eShow);
+  }else if(inString == "h"){
+    return(eHistory);
   }else if(inString == "c"){
     return(eCheck);
   }else if(inString == "help"||inString =="Help"){
@@ -114,11 +117,13 @@ commands hashit(std::string const& inString){
 }
 
 void interactionLoop(Cube &myCube){
+  std::string inputHistory = "";
   bool inputBool = true;
   std::string inputString;
   while (inputBool) {
     std::cout << "Input: ";
     std::cin >> inputString;
+    inputHistory.append(inputString + ", ");
     switch (hashit(inputString)) {
       case eFront:
         myCube.Front(1);
@@ -170,6 +175,9 @@ void interactionLoop(Cube &myCube){
       case eShow:
         myCube.DisplayInTerminal();
         break;
+      case eHistory:
+        std::cout << inputHistory << '\n';
+        break;
       case eCheck:
         myCube.IsSolved();
         break;
@@ -189,9 +197,12 @@ void interactionLoop(Cube &myCube){
         << "ln,   Rotate left of cube anticlockwise"<< '\n'
         << "r,    Rotate right of cube clockwise"<< '\n'
         << "rn,   Rotate right of cube anticlockwise"<< '\n'
-        << "mv*,  Rotate right of cube anticlockwise"<< '\n'
-        << "mh*,  Rotate right of cube anticlockwise"<< '\n'
+        << "mv*,  Rotate middle *th column of cube clockwise (if negative"
+        << "anticlockwise)"<< '\n'
+        << "mh*,  Rotate middle *th row of cube clockwise (if negative"
+        << "anticlockwise)"<< '\n'
         << "s,    Display cube"<< '\n'
+        << "h,    Display input history"<< '\n'
         << "c,    Check if cube is solved"<< '\n'
         << "help, exit"<< '\n';
         break;

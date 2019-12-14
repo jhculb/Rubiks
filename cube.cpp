@@ -7,6 +7,7 @@
 
 int countDigits(double number);
 void sayRotation(std::string Side, bool direction);
+std::string NumberFormatting(int number);
 
 Cube::Cube(const int dimension, const bool verbose, const bool autocheck){
   SetCube(dimension, verbose, autocheck);
@@ -253,22 +254,33 @@ void Cube::MiddleVertical(int Slice){
   }
 
   // Assertions and input validation
-  assert(Slice<mDimension-1); // Should use if and cerr, assertion failed isn't v. helpful
-  assert(Slice>0);
+  if(Slice>=mDimension-1){
+    std::cout << "Input out of bounds: Please input number less than "
+    << mDimension-1 << '\n';
+    return;
+  }
+  if(Slice<=0){
+    std::cout << "Input out of bounds: Please input number greater than 0"
+    << '\n';
+    return;
+  }
 
   // Front of Slice -- The cubes on the front face
   for(int i =0; i<mDimension*mDimension; i++){
-    mFace[i]=mCube[i];
-    mMiddleFace[i]=mCube[mCubeArraySize-1]+i+1;
-    /* Initialise mTempFace; with variables larger than any in the cube
-    (for Despiral, as it requires unique entries)
+    mFace[i]=mCube[i]; // Fill mFace with the front
+    mMiddleFace[i]=-mCube[mCubeArraySize-1]+i;
+    /* Initialise mMiddleFace with variables larger than any in the cube
+    (for Despiral, as it requires unique entries) -- called padding values
     - possible weak spot for integer overflow*/
   }
-  Spiral(mFace);
+  Spiral(mFace); // Arrange mFace in spacial
+
+  debugmMiddleFace();
   for(int i=0;i<mDimension;i++){
     mMiddleFace[i*mDimension]=mFace[mDimension*i+Slice];
   }
 
+    debugmMiddleFace();
   // Back of Slice -- The cubes on the Back face
   for(int i =0; i<mDimension*mDimension; i++){
     mFace[i]=mCube[mCubeArraySize-1-i];
@@ -278,34 +290,77 @@ void Cube::MiddleVertical(int Slice){
     mMiddleFace[i*mDimension+mDimension-1]=mFace[i*mDimension+Slice];
   }
 
-  // Inbetween cubes
+  debugmMiddleFace();
+  // Inbetween slices
   for(int i=0;i<mDimension-2;i++){
     mMiddleFace[i+1] // Top row
-    = mCube[mDimension*(mDimension+1)+4*(mDimension-1)*i+2*(mDimension-1)+(mDimension-Slice)-2];
+    = mCube[mDimension*(mDimension+1)+4*(mDimension-1)*i+2*(mDimension-1)
+    +(mDimension-Slice)-2];
 
     mMiddleFace[mDimension*(mDimension-1)+i+1] // Bottom row
     = mCube[mDimension*(mDimension+1)+4*(mDimension-1)*i+Slice-1];
   }
 
   for(int i = 0; i<mDimension*mDimension;i++){
-    mFace[i] = mMiddleFace[i];
+    mFace[i] = mMiddleFace[i]; // Required for rotate
   }
   debugmFace();
-  Despiral(mFace);
+  Despiral(mFace); // Required unique ints = why large padding numbers used
   Rotate(mDirection);
   Spiral(mFace);
   debugmFace();
-
   // Front of Slice -- The cubes on the front face
-  // for(int i =0; i<mDimension*mDimension; i++){
-  //   mCube[i]=mFace[i];
-  // }
+  // Remove added values
   for(int i=0;i<mDimension;i++){
-    mMiddleFace[i*mDimension]=mFace[mDimension*i+Slice];
+    for(int j=0;j<mDimension;j++){
+      if(i>0 && i<mDimension-1 && j>0 && j<mDimension-1){
+        mFace[i*mDimension+j]=0; // Remove centre values (padding values)
+      }
+      mMiddleFace[i*mDimension+j]=0; // delete mMiddleFace
+    }
+  }
+  // Front row replacement
+  for(int i =0; i<mDimension*mDimension; i++){
+    mMiddleFace[i]=mCube[i];
+  }
+  Spiral(mMiddleFace);
+  for(int i=0;i<mDimension;i++){
+    mMiddleFace[i*mDimension+Slice]=mFace[mDimension*i];
+  }
+  Despiral(mMiddleFace);
+    for(int i =0; i<mDimension*mDimension; i++){
+    mCube[i]=mMiddleFace[i];
+  }
+
+  // Back row replacement
+
+  debugmFace();
+  for(int i =0; i<mDimension*mDimension; i++){
+    mMiddleFace[i]=mCube[mCubeArraySize-1-i];
+  }
+  SpiralBack(mMiddleFace);
+  for(int i=0;i<mDimension;i++){
+    mMiddleFace[i*mDimension+Slice]=mFace[i*mDimension+mDimension-1];
   }
   debugmMiddleFace();
-  Spiral(mMiddleFace);
+  DespiralBack(mMiddleFace);
   debugmMiddleFace();
+  for(int i =0; i<mDimension*mDimension; i++){
+    mCube[mCubeArraySize-1-i]=mMiddleFace[i];
+  }
+
+  // Inbetween slices replacement
+  for(int i=0;i<mDimension-2;i++){
+    mCube[mDimension*(mDimension+1)+4*(mDimension-1)*i+2*(mDimension-1)
+    +(mDimension-Slice)-2] = mFace[i+1];
+
+  // Bottom row
+    mCube[mDimension*(mDimension+1)+4*(mDimension-1)*i+Slice-1]
+    = mFace[mDimension*(mDimension-1)+i+1];
+  }
+
+  DisplayInTerminal();
+  ExecuteCubeDefinitions("Middle "+NumberFormatting(Slice)+" Column",mDirection);
 }
 
 void Cube::MiddleHorizontal(int Slice){
@@ -342,6 +397,26 @@ void Cube::MiddleHorizontal(int Slice){
   for(int i=0;i<mDimension;i++){
     mMiddleFace[i*mDimension+mDimension-1]=mFace[i*mDimension+Slice];
   }
+
+
+  // Replaced MiddleVertical with Horizontal on back
+
+    debugmFace();
+    for(int i =0; i<mDimension*mDimension; i++){
+      mMiddleFace[i]=mCube[mCubeArraySize-1-i];
+    }
+    Spiral(mMiddleFace);
+    for(int i=0;i<mDimension;i++){
+      mMiddleFace[i*mDimension+Slice]=mFace[i*mDimension+mDimension-1];
+    }
+    debugmMiddleFace();
+    Despiral(mMiddleFace);
+    debugmMiddleFace();
+      for(int i =0; i<mDimension*mDimension; i++){
+      mCube[mCubeArraySize-1-i]=mMiddleFace[i];
+    }
+    DisplayInTerminal();
+
 }
 
 void Cube::Spiral(int* Face){
@@ -407,7 +482,6 @@ void Cube::Despiral(int* Face){
   int centreIndex,row, col, colinc, rowinc, switchvar; //Initalise variables
   if(mDimension%2==1){// If odd dimension
     centreIndex = (mDimension+1)/2-1;
-    std::cout << "centreIndex" << '\n';
     row     = centreIndex;// Starting position
     col     = centreIndex;
     colinc  = 0;// Direction
@@ -444,6 +518,54 @@ void Cube::Despiral(int* Face){
     }
   }
 }
+
+void Cube::DespiralBack(int* Face){
+
+    for(int i=0; i< mDimension; i++){// Initialise mTempFace
+      for(int j=0; j< mDimension; j++){
+        mTempFace[i*mDimension+j] =0;
+      }
+    }
+
+    int centreIndex,row, col, colinc, rowinc, switchvar; //Initalise variables
+    if(mDimension%2==1){// If odd dimension
+      centreIndex = (mDimension+1)/2-1;
+      row     = centreIndex;// Starting position
+      col     = centreIndex;
+      colinc  = -1;// Direction
+      rowinc  = 0;
+    }else{// Is even (start from centre square, bottom left)
+      centreIndex = mDimension/2;
+      row     = centreIndex;// Starting position
+      col     = centreIndex-1;
+      colinc  = 1;// Direction
+      rowinc  = 0;
+    }
+
+    bool isNotInmTempFace;
+    for(int i = 0; i < mDimension*mDimension; i++){
+      mTempFace[i] = Face[row*mDimension+col];
+      isNotInmTempFace=true;
+      // From col/row inc perspective, the left is not filled, turn left
+      for(int j=0;j<i;j++){
+        if(mTempFace[j]==Face[(row+colinc)*mDimension+col-rowinc]){
+          isNotInmTempFace=false;
+        }
+      }
+      if(isNotInmTempFace){
+        switchvar = colinc;
+        colinc = -rowinc;
+        rowinc = switchvar;
+      }
+      row+=rowinc;
+      col+=colinc;
+    }
+    for(int i=0; i< mDimension; i++){
+      for(int j=0; j< mDimension; j++){
+         Face[i*mDimension+j]=mTempFace[i*mDimension+j];
+      }
+    }
+  }
 
 void Cube::Rotate(const bool Direction){
 
@@ -649,4 +771,25 @@ void Cube::debugmMiddleFace(){
     }
     std::cout << '\n';
   }
+}
+
+std::string NumberFormatting(int number){
+  std::string output = "";
+  output.append(std::to_string(number));
+  if(number%100 != 11 && number%100 != 12 && number%100 != 13){
+    switch (number%10) {
+      case 1:
+        return(output.append("st"));
+        break;
+      case 2:
+        return(output.append("nd"));
+        break;
+      default:
+        return(output.append("rd"));
+        break;
+    }
+  }else if(number%100 == 11 || number%100 == 12 && number%100 == 13){
+    return(output.append("th"));
+  }
+  return("ERROR: Reached end of NumberFormatting without case");
 }

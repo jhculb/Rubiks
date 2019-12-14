@@ -49,6 +49,7 @@ class Cube
     void Spiral(int* Face);
     void SpiralBack(int* Face);
     void Despiral(int* Face);
+    void DespiralBack(int* Face);
 
     void Rotate(const bool Direction);
     void RotateCW();
