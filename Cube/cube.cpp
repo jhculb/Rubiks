@@ -624,8 +624,6 @@ void Cube::RotateACW(){
 void Cube::DisplayInTerminal(){
 
   // Front Calculation ==================
-  int col =0, row =0, colinc =1, rowinc =0, switchvar;
-
   for(int i=0; i< mDimension; i++){// Initialise Front
     for(int j=0; j< mDimension; j++){
       mFace[i*mDimension+j] = mCube[i*mDimension+j];
@@ -696,7 +694,6 @@ void Cube::DisplayInTerminal(){
   }
   // Back Calculation ==================
   // Initialise Back
-  int CounterFor_mFace = mDimension*mDimension-1;
   for(int i= 0; i<mDimension*mDimension ; i++){
     mFace[mDimension*mDimension-1-i] = mCube[mCubeArraySize-mDimension*mDimension+i];
   }
@@ -803,7 +800,7 @@ std::string NumberFormatting(int number){
         return(output.append("rd"));
         break;
     }
-  }else if(number%100 == 11 || number%100 == 12 && number%100 == 13){
+  }else if(number%100 == 11 || number%100 == 12 || number%100 == 13){
     return(output.append("th"));
   }
   return("ERROR: Reached end of NumberFormatting without case");

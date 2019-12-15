@@ -114,6 +114,7 @@ commands hashit(std::string const& inString){
   }else {
     return(eHelp);
   }
+  return(eHelp);
 }
 
 void interactionLoop(Cube &myCube){

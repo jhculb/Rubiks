@@ -1,9 +1,9 @@
 CC=g++
 CFLAGS=-I. -Wall
-DEPS = cube.h
+DEPS = cube.hpp IOfunctions.hpp
 OBJ = cube.o driver.o IOfunctions.o
 
-%.o: %.c $(DEPS)
+%.o: %.cpp $(DEPS)
 	$(CC) -c -o $@ $< $(CFLAGS)
 
 driver: $(OBJ)
