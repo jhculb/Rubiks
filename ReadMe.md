@@ -25,13 +25,17 @@ graphical representations.
   6. Interface for development established [IOfunctions.cpp]
   7. Check if solved code [IsSolved]
   8. Left/Right established [Left, Right]
+  1. Established Middle Vertical and Horizontal rotations
 
 ## To-Do list:
 
 1. Cube development [Cube.cpp]:
-  1. Establish Middle Vertical and Horizontal rotations {Done but buggy}
-  2. (Low priority, implement check if broken in ExecuteCubeDefinitions)
-  2. Develop API
+  1. (Low priority, implement check if broken in ExecuteCubeDefinitions)
+  1. Develop API
+  3. Visualisation code for the cube - python?
+2. Website development
+  2. Docker environment
+  2. Website development
 
 ## Inefficiency list
 1. Rotate only acts on mFace, could change it to work on any face like Spiral,
