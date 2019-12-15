@@ -1,0 +1,6 @@
+*/temp*
+#
+*/*/temp*
+#files and dirs starting with any subdirectory that is two levels below the root
+temp?
+# One character extension

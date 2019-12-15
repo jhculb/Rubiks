@@ -1,0 +1,13 @@
+version: '3.4'
+#Structure from https://docs.microsoft.com/en-us/dotnet/architecture
+#/microservices/multi-container-microservice-net-applications
+#/multi-container-applications-docker-compose
+services:
+  webserver:
+    image: ''
+      environment:
+        - 'url'
+        -
+        -
+      ports:
+        - "5100:80"
