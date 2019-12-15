@@ -244,17 +244,13 @@ void Cube::Right(const bool Choice){
 }
 
 void Cube::MiddleVertical(int Slice){
-  // Direction and slice detection
-  bool mDirection;
+
+  bool mDirection; // Direction and slice detection
   if(Slice<0){
     mDirection = 0;
     Slice = -1*Slice;
-  }else{
-    mDirection = 1;
-  }
-
-  // Assertions and input validation
-  if(Slice>=mDimension-1){
+  }else{mDirection = 1;}
+  if(Slice>=mDimension-1){ // Assertions and input validation
     std::cout << "Input out of bounds: Please input number less than "
     << mDimension-1 << '\n';
     return;
@@ -267,60 +263,41 @@ void Cube::MiddleVertical(int Slice){
 
   // Front of Slice -- The cubes on the front face
   for(int i =0; i<mDimension*mDimension; i++){
-    mFace[i]=mCube[i]; // Fill mFace with the front
-    mMiddleFace[i]=-mCube[mCubeArraySize-1]+i;
+    mMiddleFace[i]=mCube[i]; // Fill mFace with the front
+    mFace[i]=-mCube[mCubeArraySize-1]+i;
     /* Initialise mMiddleFace with variables larger than any in the cube
     (for Despiral, as it requires unique entries) -- called padding values
     - possible weak spot for integer overflow*/
   }
-  Spiral(mFace); // Arrange mFace in spacial
-
-  // debugmMiddleFace();
+  Spiral(mMiddleFace); // Arrange mFace in spacial
   for(int i=0;i<mDimension;i++){
-    mMiddleFace[i*mDimension]=mFace[mDimension*i+Slice];
+    mFace[i*mDimension]=mMiddleFace[mDimension*i+Slice];
   }
 
-    // debugmMiddleFace();
   // Back of Slice -- The cubes on the Back face
   for(int i =0; i<mDimension*mDimension; i++){
-    mFace[i]=mCube[mCubeArraySize-1-i];
+    mMiddleFace[i]=mCube[mCubeArraySize-1-i];
   }
-  SpiralBack(mFace);
+  SpiralBack(mMiddleFace);
   for(int i=0;i<mDimension;i++){
-    mMiddleFace[i*mDimension+mDimension-1]=mFace[i*mDimension+Slice];
+    mFace[i*mDimension+mDimension-1]=mMiddleFace[i*mDimension+Slice];
   }
 
-  // debugmMiddleFace();
   // Inbetween slices
   for(int i=0;i<mDimension-2;i++){
-    mMiddleFace[i+1] // Top row
+    mFace[i+1] // Top row
     = mCube[mDimension*(mDimension+1)+4*(mDimension-1)*i+2*(mDimension-1)
     +(mDimension-Slice)-2];
 
-    mMiddleFace[mDimension*(mDimension-1)+i+1] // Bottom row
+    mFace[mDimension*(mDimension-1)+i+1] // Bottom row
     = mCube[mDimension*(mDimension+1)+4*(mDimension-1)*i+Slice-1];
   }
 
-  for(int i = 0; i<mDimension*mDimension;i++){
-    mFace[i] = mMiddleFace[i]; // Required for rotate
-  }
-  // debugmFace();
   Despiral(mFace); // Required unique ints = why large padding numbers used
   Rotate(mDirection);
   Spiral(mFace);
-  // debugmFace();
-  // Front of Slice -- The cubes on the front face
-  // Remove added values
-  for(int i=0;i<mDimension;i++){
-    for(int j=0;j<mDimension;j++){
-      if(i>0 && i<mDimension-1 && j>0 && j<mDimension-1){
-        mFace[i*mDimension+j]=0; // Remove centre values (padding values)
-      }
-      mMiddleFace[i*mDimension+j]=0; // delete mMiddleFace
-    }
-  }
-  // Front row replacement
-  for(int i =0; i<mDimension*mDimension; i++){
+
+  for(int i =0; i<mDimension*mDimension; i++){ // Front row replacement
     mMiddleFace[i]=mCube[i];
   }
   Spiral(mMiddleFace);
@@ -332,50 +309,39 @@ void Cube::MiddleVertical(int Slice){
     mCube[i]=mMiddleFace[i];
   }
 
-  // Back row replacement
-
-  // debugmFace();
-  for(int i =0; i<mDimension*mDimension; i++){
+  for(int i =0; i<mDimension*mDimension; i++){ // Back row replacement
     mMiddleFace[i]=mCube[mCubeArraySize-1-i];
   }
   SpiralBack(mMiddleFace);
   for(int i=0;i<mDimension;i++){
     mMiddleFace[i*mDimension+Slice]=mFace[i*mDimension+mDimension-1];
   }
-  // debugmMiddleFace();
   DespiralBack(mMiddleFace);
-  // debugmMiddleFace();
   for(int i =0; i<mDimension*mDimension; i++){
     mCube[mCubeArraySize-1-i]=mMiddleFace[i];
   }
 
-  // Inbetween slices replacement
-  for(int i=0;i<mDimension-2;i++){
+  for(int i=0;i<mDimension-2;i++){// Inbetween slices replacement
+    // Top row
     mCube[mDimension*(mDimension+1)+4*(mDimension-1)*i+2*(mDimension-1)
     +(mDimension-Slice)-2] = mFace[i+1];
-
-  // Bottom row
+    // Bottom row
     mCube[mDimension*(mDimension+1)+4*(mDimension-1)*i+Slice-1]
     = mFace[mDimension*(mDimension-1)+i+1];
   }
 
-  // DisplayInTerminal();
-  ExecuteCubeDefinitions("Middle "+NumberFormatting(Slice)+" Column",mDirection)
-  ;
+ExecuteCubeDefinitions("Middle "+NumberFormatting(Slice)+" Column",mDirection);
 }
 
 void Cube::MiddleHorizontal(int Slice){
-  // Direction and slice detection
-  bool mDirection;
+
+  bool mDirection; // Direction and slice detection
   if(Slice<0){
     mDirection = 0;
     Slice = -1*Slice;
-  }else{
-    mDirection = 1;
-  }
+  }else{mDirection = 1;}
 
-  // Assertions and input validation
-  if(Slice>=mDimension-1){
+  if(Slice>=mDimension-1){ // Assertions and input validation
     std::cout << "Input out of bounds: Please input number less than "
     << mDimension-1 << '\n';
     return;
@@ -388,101 +354,75 @@ void Cube::MiddleHorizontal(int Slice){
 
   // Front of Slice -- The cubes on the front face
   for(int i =0; i<mDimension*mDimension; i++){
-    mFace[i]=mCube[i]; // Fill mFace with the front
-    mMiddleFace[i]=-mCube[mCubeArraySize-1]+i;
-    /* Initialise mMiddleFace with variables larger than any in the cube
+    mMiddleFace[i]=mCube[i]; // Fill mMiddleFace with the front
+    mFace[i]=-mCube[mCubeArraySize-1]+i;
+    /* Initialise mFace with variables larger than any in the cube
     (for Despiral, as it requires unique entries) -- called padding values
     - possible weak spot for integer overflow*/
   }
-  Spiral(mFace); // Arrange mFace in spacial
+  Spiral(mMiddleFace); // Arrange mMiddleFace in spacial representation
 
-  // debugmMiddleFace();
-  for(int i=0;i<mDimension;i++){
-    mMiddleFace[i*mDimension]=mFace[mDimension*Slice+i];
+
+  for(int i=0;i<mDimension;i++){// Storing front in mFace
+    mFace[i*mDimension]=mMiddleFace[mDimension*Slice+i];
   }
 
-    // debugmMiddleFace();
   // Back of Slice -- The cubes on the Back face
   for(int i =0; i<mDimension*mDimension; i++){
-    mFace[i]=mCube[mCubeArraySize-1-i];
-  }
-  SpiralBack(mFace);
-  for(int i=0;i<mDimension;i++){
-    mMiddleFace[i*mDimension+mDimension-1]=mFace[mDimension*Slice+i];
+    mMiddleFace[i]=mCube[mCubeArraySize-1-i];
   }
 
-  debugmMiddleFace();
-  // Inbetween slices
-  for(int i=0;i<mDimension-2;i++){
-    mMiddleFace[i+1] // Top row
-    = mCube[mDimension*(mDimension+1)+4*(mDimension-1)*Slice+2*(mDimension-1)
-    +(mDimension-i)-2];
+  SpiralBack(mMiddleFace);
 
-    mMiddleFace[mDimension*(mDimension-1)+i+1] // Bottom row
-    = mCube[mDimension*(mDimension+1)+4*(mDimension-1)*Slice+i-1];
+  for(int i=0;i<mDimension;i++){// Storing back in mFace
+    mFace[i*mDimension+mDimension-1]=mMiddleFace[mDimension*Slice+i];
   }
 
-  for(int i = 0; i<mDimension*mDimension;i++){
-    mFace[i] = mMiddleFace[i]; // Required for rotate
+  for(int i=0;i<mDimension-2;i++){  // Inbetween slices
+    mFace[i+1] // Top row of middleface
+    = mCube[mDimension*mDimension+4*(mDimension-1)*i+Slice];
+    mFace[mDimension*(mDimension-1)+i+1] // Bottom row
+    = mCube[mDimension*mDimension+4*(mDimension-1)*i+2*(mDimension-1)
+    +mDimension-Slice-1];
   }
-  debugmFace();
   Despiral(mFace); // Required unique ints = why large padding numbers used
   Rotate(mDirection);
   Spiral(mFace);
-  // debugmFace();
-  // Front of Slice -- The cubes on the front face
-  // Remove added values
-  for(int i=0;i<mDimension;i++){
-    for(int j=0;j<mDimension;j++){
-      if(i>0 && i<mDimension-1 && j>0 && j<mDimension-1){
-        mFace[i*mDimension+j]=0; // Remove centre values (padding values)
-      }
-      mMiddleFace[i*mDimension+j]=0; // delete mMiddleFace
-    }
-  }
+
   // Front row replacement
-  for(int i =0; i<mDimension*mDimension; i++){
+  for(int i =0; i<mDimension*mDimension; i++){ // Copy front face of cube
     mMiddleFace[i]=mCube[i];
   }
   Spiral(mMiddleFace);
-  for(int i=0;i<mDimension;i++){
+  for(int i=0;i<mDimension;i++){ // Replace values in front with rotated values
     mMiddleFace[Slice*mDimension+i]=mFace[mDimension*i];
   }
   Despiral(mMiddleFace);
-    for(int i =0; i<mDimension*mDimension; i++){
+    for(int i =0; i<mDimension*mDimension; i++){ // Store rotation face in cube
     mCube[i]=mMiddleFace[i];
   }
 
   // Back row replacement
-
-  // debugmFace();
-  for(int i =0; i<mDimension*mDimension; i++){
+  for(int i =0; i<mDimension*mDimension; i++){ // Copy back of cube
     mMiddleFace[i]=mCube[mCubeArraySize-1-i];
   }
   SpiralBack(mMiddleFace);
   for(int i=0;i<mDimension;i++){
     mMiddleFace[Slice*mDimension+i]=mFace[i*mDimension+mDimension-1];
   }
-  // debugmMiddleFace();
   DespiralBack(mMiddleFace);
-  // debugmMiddleFace();
-  for(int i =0; i<mDimension*mDimension; i++){
+  for(int i =0; i<mDimension*mDimension; i++){ // Store rotation of face in cube
     mCube[mCubeArraySize-1-i]=mMiddleFace[i];
   }
 
-  // Inbetween slices replacement
-  for(int i=0;i<mDimension-2;i++){
-    mCube[mDimension*(mDimension+1)+4*(mDimension-1)*Slice+2*(mDimension-1)
-    +(mDimension-i)-2] = mFace[i+1];
-
-  // Bottom row
-    mCube[mDimension*(mDimension+1)+4*(mDimension-1)*Slice+i-1]
-    = mFace[mDimension*(mDimension-1)+i+1];
+  for(int i=0;i<mDimension-2;i++){// Inbetween slices replacement
+    // Left of slice in mCube
+    mCube[mDimension*mDimension+4*(mDimension-1)*i+Slice] = mFace[i+1];
+    // Right of slice in mCube
+    mCube[mDimension*mDimension+4*(mDimension-1)*i+2*(mDimension-1)
+    +mDimension-Slice-1]=mFace[mDimension*(mDimension-1)+i+1];
   }
-
-  DisplayInTerminal();
-  ExecuteCubeDefinitions("Middle "+NumberFormatting(Slice)+" Row",mDirection)
-  ;
+  ExecuteCubeDefinitions("Middle "+NumberFormatting(Slice)+" Row",mDirection);
 }
 
 void Cube::Spiral(int* Face){
@@ -541,7 +481,7 @@ void Cube::Despiral(int* Face){
 
   for(int i=0; i< mDimension; i++){// Initialise mTempFace
     for(int j=0; j< mDimension; j++){
-      mTempFace[i*mDimension+j] =0;
+      mTempFace[i*mDimension+j] = 0;
     }
   }
 
@@ -561,11 +501,11 @@ void Cube::Despiral(int* Face){
   }
 
   bool isNotInmTempFace;
-  for(int i = 0; i < mDimension*mDimension; i++){
+  for(int i =0; i < mDimension*mDimension; i++){
     mTempFace[i] = Face[row*mDimension+col];
     // From col/row inc perspective, the left is not filled, turn left
     isNotInmTempFace=true;
-    for(int j=0;j<i;j++){
+    for(int j =0; j < i; j++){
       if(mTempFace[j]==Face[(row-colinc)*mDimension+col+rowinc]){
         isNotInmTempFace=false;
       }
@@ -583,7 +523,10 @@ void Cube::Despiral(int* Face){
        Face[i*mDimension+j]=mTempFace[i*mDimension+j];
     }
   }
+  // debugmTempFace();
+  // debugmFace();
 }
+
 
 void Cube::DespiralBack(int* Face){
 
@@ -612,7 +555,7 @@ void Cube::DespiralBack(int* Face){
     for(int i = 0; i < mDimension*mDimension; i++){
       mTempFace[i] = Face[row*mDimension+col];
       isNotInmTempFace=true;
-      // From col/row inc perspective, the left is not filled, turn left
+      // From col/row inc perspective, the left is not filled, turn right
       for(int j=0;j<i;j++){
         if(mTempFace[j]==Face[(row+colinc)*mDimension+col-rowinc]){
           isNotInmTempFace=false;
@@ -645,15 +588,18 @@ void Cube::Rotate(const bool Direction){
 }
 
 void Cube::RotateCW(){
-
+  // debugmFace();
   int switchvar;
   for(int i=2+mDimension%2;i<=mDimension;i+=2){
     for(int j=0;j<i-1;j++){
+      // std::cout << "Indexes: " << i*i-j-(i-1)*3-1<< ", " << i*i-j-1 << ", " << i*i-j-(i-1)-1 << ", "<< i*i-j-(i-1)*2-1 << '\n';
+      // std::cout << "switchvar" << switchvar << " = " << mFace[i*i-j-(i-1)*3-1] << '\n';
       switchvar              = mFace[i*i-j-(i-1)*3-1]; // Store 3
       mFace[i*i-j-(i-1)*3-1]  = mFace[i*i-j-(i-1)*2-1]; // 5 overwriting 3
       mFace[i*i-j-(i-1)*2-1]  = mFace[i*i-j-(i-1)-1] ;  // 7 overwriting 5
       mFace[i*i-j-(i-1)-1]    = mFace[i*i-j-1];         // 9 overwriting 7
       mFace[i*i-j-1]          = switchvar;             // 3 overwriting 9
+      // debugmFace();
     }
   }
 }
@@ -663,11 +609,14 @@ void Cube::RotateACW(){
   int switchvar;
   for(int i=2+mDimension%2;i<=mDimension;i+=2){
     for(int j=0;j<i-1;j++){
+      // std::cout << "Indexes: " << i*i-j-(i-1)*3-1<< ", " << i*i-j-1 << ", " << i*i-j-(i-1)-1 << ", "<< i*i-j-(i-1)*2-1 << '\n';
+      // std::cout << "switchvar" << switchvar << " = " << mFace[i*i-j-(i-1)*3-1] << '\n';
       switchvar              = mFace[i*i-j-(i-1)*3-1]; // Store 3
       mFace[i*i-j-(i-1)*3-1]  = mFace[i*i-j-1];         // 9 overwriting 3
       mFace[i*i-j-1]          = mFace[i*i-j-(i-1)-1];   // 7 overwriting 9
       mFace[i*i-j-(i-1)-1]    = mFace[i*i-j-(i-1)*2-1]; // 5 overwriting 7
       mFace[i*i-j-(i-1)*2-1]  = switchvar;             // 3 overwriting 5
+      // debugmFace();
     }
   }
 }

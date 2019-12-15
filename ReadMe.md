@@ -30,7 +30,7 @@ graphical representations.
 
 1. Cube development [Cube.cpp]:
   1. Establish Middle Vertical and Horizontal rotations {Done but buggy}
-  2. (Low priority, implement )
+  2. (Low priority, implement check if broken in ExecuteCubeDefinitions)
   2. Develop API
 
 ## Inefficiency list
@@ -44,25 +44,17 @@ vector and iterate through these (i.e. in the MiddleVertical replacement steps)?
 lines to remove need to switch?
 6. MiddleVertical & MiddleHorizontal replacement replace only row not face?
 7. Possible (with major efficiency gains & major recoding): Store mCube,
-prespiraled. I.e. in constructor spiral it. 
+prespiraled. I.e. in constructor spiral it.
+8. Rotating Horizontal only needs to initialise centre negative values once?
+0. Do I need mMiddleFace?
+0. Terminal Display store each line in string and print?
 
 ## Possible bug list
 1. MiddleVertical & MiddleHorizontal use integers above mCube max size, possible
  integer overflow - soln negative mcube face instead?
-2. While rotating middle vertically a pointer seemed to get accessed rather than
- an array element, cannot reproduce currently with interface as a history was
-not implemented. May have accidentally used mh rather than mv. Believed to be in
- Front of slice - mMiddleFace being set or mface being spiraled.
- 3. Sim to previous two pointers found. input list:
- mh2, b, b, b, b, b, b, b, b, b, b, b, b, b, b, b, b, b, mh-1, m, b, b, b, b, b, b, mh-1, mh-1, mh-1, mh1, mh1, mh2, mh3, help, h,
 
- Back:  
-1,  4,  3,  75, 6,  
--778462756,   5,  8,  9,  10,  
-201365264, 78, 1,  2,  80,  
-20, 1,  -778462756,   201365264, 20,  
-48, 47, 46, 85, 86,  
 
 ## Known bug list
 1. entering 2 into dimension input {IOfunctions} loops infinitely
+2. Sim above: Input handling is off. dim=mh3 gives infinite loop
 2. 1x1 cubes render incorrectly & probably need an edge case for this
