@@ -1,4 +1,3 @@
-<<<<<<< HEAD
 FROM alpine:latest AS builder
 ENV DEBIAN_FRONTEND noninteractive
 RUN apk update && \
@@ -26,21 +25,3 @@ COPY docker-entrypoint.sh .
 COPY --from=builder ./usr/cube/driver .
 RUN chmod +x, docker-entrypoint.sh
 ENTRYPOINT ["bash", "docker-entrypoint.sh"]
-=======
-FROM ubuntu AS builder
-ENV DEBIAN_FRONTEND noninteractive
-RUN apt-get update && \
-    apt-get -y install gcc mono-mcs && \
-    apt-get -y install make && \
-    rm -rf /var/lib/apt/lists/*
-COPY . usr/src/cube
-WORKDIR usr/src/cube
-RUN make
-RUN make clean
-RUN ls
-
-FROM alpine:latest
-WORKDIR /root/cube
-COPY --from=builder /usr/src/cube/driver .
-CMD ["./driver"]
->>>>>>> cd47b5bc8e21feeaf3bf86aba628e7ec872a554b
