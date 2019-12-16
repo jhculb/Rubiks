@@ -16,8 +16,7 @@ RUN make
 
 
 FROM alpine:latest
-RUN apk add libc6-compat &&\
-    apk add bash &&\
+RUN apk add bash &&\
     apk add g++
     #Do we need libc60-compact???
 WORKDIR ./usr/cube
