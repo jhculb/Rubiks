@@ -6,17 +6,16 @@ based on traditional methods and some AI solvers as well.
 
 ### The Project Roadmap
 
-1. Develop a C++ Rubiks cube, of NxN 'dimension', which has all of the required
-manipulations, has an API, etc.
-2. Create Docker website
-3. Develop Python code to interface between a user and the Cube, including
-graphical representations.
+1. Develop an API for the cube
+2. Develop a website with python webapp
+3. Develop Python code to interface between a user and the Cube, including graphical representations,
 4. Develop Python/C++ based traditional solvers (i.e. algorithmic)
 5. Develop AI solvers (Keras/Tensorflow)
+6. Upload to Website (inc. autoupdate, etc.)
 
 ## Current Progress
 
-1. Cube development [Cube.cpp]:
+1. Cube development [/Cube]:
   1. Representation established [constructor/destructor]
   2. Printing to terminal [DisplayInTerminal]
   3. Front rotation (CW) implemented [Front]
@@ -26,6 +25,12 @@ graphical representations.
   7. Check if solved code [IsSolved]
   8. Left/Right established [Left, Right]
   1. Established Middle Vertical and Horizontal rotations
+  1. Dockerised
+    1. Alpine distro (builder) makes file
+    2. Passes it to another distro (app) which runs driver
+2. Website development [/Website]
+  1. Website docker initalised
+  2. Basic webpage setup
 
 ## To-Do list:
 
