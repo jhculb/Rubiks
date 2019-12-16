@@ -15,10 +15,9 @@ RUN make
 # -alpine-linux/
 
 
-FROM alpine:latest
+FROM alpine:latest AS app
 RUN apk add bash &&\
     apk add g++
-    #Do we need libc60-compact???
 WORKDIR ./usr/cube
 COPY docker-entrypoint.sh .
 COPY --from=builder ./usr/cube/driver .
