@@ -1,0 +1,8 @@
+Currently working through the examples given below to build a basis for
+the C++ app cube to be a module in the python code on the solver.
+
+Examples given here:
+https://docs.python.org/3/extending/extending.html
+
+
+Note for future: can compile the code for greater efficiency?
