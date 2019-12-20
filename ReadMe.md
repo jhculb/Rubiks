@@ -13,6 +13,17 @@ based on traditional methods and some AI solvers as well.
 5. Develop AI solvers (Keras/Tensorflow)
 6. Upload to Website (inc. autoupdate, etc.)
 
+## Post break goals
+1. update the readme with this section's Goals
+2. focus on solvers
+  1. develop one elementary solver
+  2. focus on ML approaches
+    1. Keras / Tensorflow probably
+    2. possibly pytorch
+3. If time, web frontend
+5. Personal - Try VScode & explore Gitlab
+6. Meanwile check out AWS hosting 
+
 ## Current Progress
 
 1. Cube development [/Cube]:
@@ -27,7 +38,7 @@ based on traditional methods and some AI solvers as well.
   1. Established Middle Vertical and Horizontal rotations
   1. Dockerised
     1. Alpine distro (builder) makes file
-    2. Passes it to another distro (app) which runs driver
+    2. Passes it to another distro (app) which runs a bash script, starting driver
 2. Website development [/Website]
   1. Website docker initalised
   2. Basic webpage setup
