@@ -1,3 +1,5 @@
+#From https://hub.docker.com/_/python
+
 FROM python:3
 
 WORKDIR /usr/app
@@ -5,11 +7,6 @@ WORKDIR /usr/app
 COPY requirements.txt ./
 RUN pip install --no-cache-dir -r requirements.txt
 
-COPY . .
+COPY . ./
 
-CMD [ "python", "./your-daemon-or-script.py" ]
-
-#From https://hub.docker.com/_/python
-
-#docker images
-#curl docker
+CMD [ "python", "./main.py" ]
