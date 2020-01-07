@@ -5,9 +5,11 @@
         "label": "Start Yaml",
         "type": "shell",
         "command": "docker-compose",
-        "args": ["up"],
+        "args": [
+          "up"
+        ],
         "group": {
-          "kind": "test",
+          "kind": "build",
           "isDefault": true
         }
       },
@@ -15,7 +17,9 @@
         "label": "Docker Down",
         "type": "shell",
         "command": "docker-compose",
-        "args": ["down"],
+        "args": [
+          "down"
+        ]
       }
     ]
   }

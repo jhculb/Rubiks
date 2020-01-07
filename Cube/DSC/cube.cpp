@@ -267,9 +267,9 @@ void Cube::MiddleVertical(int Slice){
     mFace[i]=-mCube[mCubeArraySize-1]+i;
     /* Initialise mMiddleFace with variables larger than any in the cube
     (for Despiral, as it requires unique entries) -- called padding values
-    - possible weak spot for integer overflow*/
+    - possible weak spot for integer overflow in v. large cubes*/
   }
-  Spiral(mMiddleFace); // Arrange mFace in spacial
+  Spiral(mMiddleFace); // Arrange mFace in spacial orientation
   for(int i=0;i<mDimension;i++){
     mFace[i*mDimension]=mMiddleFace[mDimension*i+Slice];
   }
@@ -293,7 +293,7 @@ void Cube::MiddleVertical(int Slice){
     = mCube[mDimension*(mDimension+1)+4*(mDimension-1)*i+Slice-1];
   }
 
-  Despiral(mFace); // Required unique ints = why large padding numbers used
+  Despiral(mFace); // Requires unique ints = why large padding numbers used
   Rotate(mDirection);
   Spiral(mFace);
 
