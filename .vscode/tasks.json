@@ -1,0 +1,21 @@
+{
+    "version": "2.0.0",
+    "tasks": [
+      {
+        "label": "Start Yaml",
+        "type": "shell",
+        "command": "docker-compose",
+        "args": ["up"],
+        "group": {
+          "kind": "test",
+          "isDefault": true
+        }
+      },
+      {
+        "label": "Docker Down",
+        "type": "shell",
+        "command": "docker-compose",
+        "args": ["down"],
+      }
+    ]
+  }

@@ -19,7 +19,7 @@ FROM alpine:latest AS app
 RUN apk add bash &&\
     apk add g++
 WORKDIR ./usr/cube
-COPY docker-entrypoint.sh .
+# COPY docker-entrypoint.sh .
 COPY --from=builder ./usr/cube/driver .
-RUN chmod +x, docker-entrypoint.sh
-ENTRYPOINT ["bash", "docker-entrypoint.sh"]
+# RUN chmod +x, docker-entrypoint.sh
+# ENTRYPOINT ["bash", "docker-entrypoint.sh"]
